@@ -93,12 +93,18 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
   if (phase === 'invitado') {
     const fallbackTitle = <BubbleWords text={i.titulo} className="text-inflated text-center text-[clamp(56px,17vw,120px)] leading-[0.95]" />;
     return (
-      <div ref={titleRef} className="screen justify-center gap-6 text-center">
+      <div ref={titleRef} className="screen screen-center gap-6 text-center">
         <Floaties wander items={[
-          { img: 'globos/flor', x: '-8%', y: '6%', size: 120, rot: -10 },
-          { img: 'nature-butterfly', x: '72%', y: '10%', size: 100, rot: 12 },
-          { img: 'nature-berries', x: '-4%', y: '76%', size: 100 },
-          { img: 'globos/perrito', x: '70%', y: '76%', size: 120, rot: -6 },
+          { img: 'globos/flor', x: '-8%', y: '4%', size: 118, rot: -10 },
+          { img: 'shapes-zigzag', x: '36%', y: '-1%', size: 86, rot: 8 },
+          { img: 'shapes-crown', x: '74%', y: '3%', size: 96, rot: 12 },
+          { img: 'shapes-hearts', x: '-6%', y: '34%', size: 88, rot: -8 },
+          { img: 'lifestyle-glasses', x: '80%', y: '28%', size: 86, rot: 14 },
+          { img: 'lifestyle-trumpet', x: '-8%', y: '58%', size: 104, rot: -12 },
+          { img: 'nature-comet', x: '80%', y: '52%', size: 92 },
+          { img: 'globos/cerdito', x: '4%', y: '78%', size: 92, rot: 6 },
+          { img: 'lifestyle-gift', x: '42%', y: '86%', size: 80, rot: -6 },
+          { img: 'globos/perrito', x: '70%', y: '76%', size: 124, rot: -6 },
         ]} />
         {config.titulos.invitado ? (
           <BalloonTitle
@@ -119,7 +125,7 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
   }
 
   return (
-    <div ref={rootRef} className="screen justify-center">
+    <div ref={rootRef} className="screen screen-center">
       <Floaties wander items={[
           { img: 'nature-comet', x: '68%', y: '6%', size: 120 },
           { img: 'globos/flor', x: '-8%', y: '74%', size: 120, rot: -14 },

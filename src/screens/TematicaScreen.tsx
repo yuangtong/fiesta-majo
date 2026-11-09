@@ -39,9 +39,9 @@ export function TematicaScreen({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <div ref={ref} className="screen gap-6 md:justify-center md:text-center">
+    <div ref={ref} className="screen screen-center gap-6 md:text-center">
       <Floaties items={[
-        { img: 'nature-fish', x: '74%', y: '2%', size: 104, rot: 12 },
+        { img: 'shapes-crown', x: '76%', y: '2%', size: 96, rot: 12 },
         { img: 'nature-sun', x: '-10%', y: '90%', size: 96 },
         { img: 'globos/flor', x: '78%', y: '86%', size: 100, rot: -12 },
       ]} />

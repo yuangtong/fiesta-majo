@@ -115,7 +115,7 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
   }, [phase]);
 
   return (
-    <div className="screen gap-4 md:justify-center">
+    <div className="screen screen-center gap-4">
       <Floaties items={[
         { img: 'shapes-crown', x: '-8%', y: '48%', size: 76, rot: -10 },
         { img: 'nature-rainbow', x: '70%', y: '84%', size: 130 },

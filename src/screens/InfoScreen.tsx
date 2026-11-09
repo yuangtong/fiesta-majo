@@ -45,7 +45,7 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
     <div data-passthrough className="h-full w-full overflow-y-auto overscroll-contain">
       <Floaties items={[
         { img: 'nature-rainbow', x: '70%', y: '2%', size: 120 },
-        { img: 'lifestyle-bulb', x: '-5%', y: '86%', size: 90, rot: 12 },
+        { img: 'lifestyle-trumpet', x: '-5%', y: '86%', size: 90, rot: 12 },
         { img: 'globos/flor', x: '80%', y: '84%', size: 90, rot: -10 },
       ]} />
       <div ref={ref} data-passthrough className="mx-auto flex w-full max-w-[460px] flex-col gap-4 px-5 pb-24 pt-10">

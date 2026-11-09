@@ -82,11 +82,11 @@ export function FormScreen({ guest, onChange, onDone }: {
   const titleId = `paso-${step}`;
 
   return (
-    <form onSubmit={next} noValidate className="screen justify-center gap-6">
+    <form onSubmit={next} noValidate className="screen screen-center gap-6">
       <Floaties items={[
         { img: 'lifestyle-trumpet', x: '82%', y: '70%', size: 84, rot: -8 },
-        { img: 'nature-cat', x: '-8%', y: '89%', size: 86, rot: -8 },
-        { img: 'shapes-cube', x: '86%', y: '90%', size: 60, rot: 12 },
+        { img: 'globos/cerdito', x: '-8%', y: '89%', size: 86, rot: -8 },
+        { img: 'shapes-star', x: '86%', y: '90%', size: 60, rot: 12 },
       ]} />
       {/* Progreso: 3 globos que se inflan */}
       <div className="flex w-full max-w-[420px] items-center gap-3" aria-label={`Paso ${step + 1} de 3`}>

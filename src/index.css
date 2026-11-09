@@ -31,6 +31,9 @@ body {
 @layer components {
   /* data-passthrough: un toque en un espacio vacío de la pantalla agarra la nube que esté debajo (ver Sky). */
   .screen { @apply relative flex h-full w-full flex-col items-center overflow-y-auto overscroll-contain px-5 py-10; }
+  /* Centrado vertical que no corta: dos "resortes" arriba y abajo que se encogen a 0 si el contenido es más alto
+     que la pantalla (justify-center cortaba el título y no dejaba hacer scroll hasta arriba). */
+  .screen-center::before, .screen-center::after { content: ''; flex: 1 1 0; min-height: 0; }
 
   /* Botón tipo globo: pastilla brillante que se aplasta al tocar */
   .btn-balloon {
