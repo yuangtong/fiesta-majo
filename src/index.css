@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sky-top: #4bb1f8;
+  --sky-mid: #65c1fd;
+  --sky-low: #ace8fd;
+  --ink: #0a1f44;
+  --balloon: #ff4d6d;
+  --balloon-dark: #d9264a;
+}
+
+html, body, #root { height: 100%; margin: 0; overflow: hidden; }
+body {
+  font-family: Archivo, system-ui, sans-serif;
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--sky-top), var(--sky-mid) 55%, var(--sky-low));
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 12px; }
+
+@layer components {
+  .screen { @apply relative flex h-full w-full flex-col items-center overflow-y-auto px-5 py-10; }
+
+  /* Botón tipo globo: pastilla brillante que se aplasta al tocar */
+  .btn-balloon {
+    @apply relative inline-flex select-none items-center justify-center gap-2 rounded-full px-7 py-4 text-base font-extrabold text-white;
+    background: radial-gradient(120% 140% at 30% 20%, #ff8fa3 0%, var(--balloon) 45%, var(--balloon-dark) 100%);
+    box-shadow: inset 0 -6px 12px rgb(0 0 0 / .18), inset 0 6px 10px rgb(255 255 255 / .35), 0 10px 24px rgb(217 38 74 / .35);
+    transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+  }
+  .btn-balloon:active { transform: scale(.94, .9); }
+  .btn-balloon:disabled { opacity: .5; }
+  .btn-balloon::after { /* brillo */
+    content: ''; position: absolute; top: 18%; left: 14%; width: 22%; height: 22%;
+    border-radius: 999px; background: rgb(255 255 255 / .55); filter: blur(1px); pointer-events: none;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-white/85 px-5 py-3 text-sm font-bold text-ink backdrop-blur;
+    box-shadow: 0 6px 16px rgb(10 31 68 / .12);
+    transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+  }
+  .btn-ghost:active { transform: scale(.95); }
+
+  /* Texto inflado (aproximación del look globo con CSS) */
+  .text-inflated {
+    font-family: 'Bagel Fat One', system-ui, sans-serif;
+    color: #fff;
+    letter-spacing: 0;
+    text-shadow:
+      0 2px 0 #ffd6de, 0 4px 0 #ffb3c1, 0 6px 0 var(--balloon),
+      0 10px 18px rgb(217 38 74 / .45);
+  }
+
+  .panel { @apply rounded-[28px] bg-white/90 p-5 text-ink backdrop-blur; box-shadow: 0 14px 40px rgb(10 31 68 / .12); }
+  .field { @apply w-full rounded-2xl border-2 border-white bg-white px-4 py-4 text-lg font-semibold text-ink outline-none placeholder:text-ink/35 focus:border-balloon; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
