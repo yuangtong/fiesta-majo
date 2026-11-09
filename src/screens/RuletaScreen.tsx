@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import confetti from 'canvas-confetti';
 import { config } from '../config';
 import { CrossedGift } from '../components/CrossedGift';
+import { Floaties } from '../components/Floaties';
 import { plasticine, prefersReducedMotion } from '../lib/motion';
 import { tada, tick } from '../lib/sfx';
 
@@ -13,9 +14,9 @@ const CARD_H = 100;
 
 export function RuletaScreen({ onNext }: { onNext: () => void }) {
   const r = config.ruleta;
-  // Con el giro en sentido horario, la carta que pasa por el puntero justo antes de la última es la primera:
-  // por eso "Cumpleaños" va primera y la ganadora última (la ruleta casi se detiene en Cumpleaños).
-  const cards = [r.opciones.find((o) => o.id === 'cumple')!, ...r.opciones.filter((o) => o.id !== 'cumple'), { ...r.ganadora, winner: true as const }];
+  // La ganadora va última: con el giro en sentido horario, la ruleta casi se detiene en la primera carta
+  // y avanza una más hasta la ganadora.
+  const cards = [...r.opciones, { ...r.ganadora, winner: true as const }];
   const N = cards.length;
   const step = 360 / N;
   const winnerIdx = N - 1;
@@ -82,7 +83,7 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
     if (prefersReducedMotion()) {
       tl.to(state, { rot: target, duration: 0.6, onUpdate: apply });
     } else {
-      // Casi se detiene en "Cumpleaños"… y avanza una más.
+      // Casi se detiene en la carta anterior… y avanza una más.
       tl.to(state, { rot: target - step * 0.92, duration: 4.4, ease: 'power3.out', onUpdate: apply })
         .to(state, { rot: target, duration: 0.9, ease: 'power2.inOut', onUpdate: apply }, '+=0.45');
     }
@@ -105,9 +106,14 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
   }, [phase]);
 
   return (
-    <div className="screen gap-4">
+    <div className="screen gap-4 md:justify-center">
+      <Floaties items={[
+        { img: 'shapes-hearts', x: '-5%', y: '3%', size: 96, rot: -10 },
+        { img: 'nature-rainbow', x: '70%', y: '84%', size: 130 },
+        { img: 'shapes-zigzag', x: '-6%', y: '86%', size: 110, rot: 8 },
+      ]} />
       <div className="text-center">
-        <p className="font-dot text-lg font-black uppercase text-white drop-shadow">{r.subtitulo}</p>
+        <p className="font-dot text-lg font-black uppercase text-legible">{r.subtitulo}</p>
         <h2 className="text-inflated text-[clamp(44px,13vw,64px)] leading-none">{r.titulo}</h2>
       </div>
 

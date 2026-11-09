@@ -34,6 +34,7 @@ function Invitation() {
   const [screen, setScreen] = useState<Screen>('intro');
   const [guest, setGuest] = useState<Guest>(INITIAL);
   const [started, setStarted] = useState(false);
+  const [yaExistia, setYaExistia] = useState(false);
   const screenRef = useRef<HTMLDivElement>(null);
   const entering = useRef(false);
 
@@ -68,9 +69,9 @@ function Invitation() {
       case 'tematica':
         return <TematicaScreen onNext={() => go('form')} />;
       case 'form':
-        return <FormScreen guest={guest} onChange={update} onDone={(numero) => { update({ numero }); go('ticket'); }} />;
+        return <FormScreen guest={guest} onChange={update} onDone={(numero, existia) => { update({ numero }); setYaExistia(!!existia); go('ticket'); }} />;
       case 'ticket':
-        return <TicketScreen guest={guest} onNext={() => go('info')} />;
+        return <TicketScreen guest={guest} yaExistia={yaExistia} onNext={() => go('info')} />;
       case 'info':
         return <InfoScreen guest={guest} total={total} />;
     }
@@ -79,7 +80,7 @@ function Invitation() {
   return (
     <main className="relative h-full w-full overflow-hidden">
       <Sky />
-      <div ref={screenRef} className="pointer-events-none relative h-full w-full">{render()}</div>
+      <div ref={screenRef} data-passthrough className="relative h-full w-full">{render()}</div>
       {started && <AudioToggle enabled={audioOn} onToggle={toggle} />}
     </main>
   );

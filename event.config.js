@@ -26,6 +26,13 @@ export default {
     invitadoActivo: false,
   },
 
+  // Títulos con letras globo como IMAGEN (PNG/WebP con fondo transparente en public/images/titulos/).
+  // Si hay imagen, se usa en vez de Spline (más liviano, sin sello de Spline, funciona en todos los celulares).
+  titulos: {
+    club: '', // ej. '/images/titulos/huamanga-club.webp'
+    invitado: '', // ej. '/images/titulos/estas-invitado.webp'
+  },
+
   // Música de fondo (archivo en public/audio/). Vacío = sin música, solo efectos.
   musica: '',
 
@@ -47,7 +54,6 @@ export default {
     ],
     nota: 'Primera fiesta organizada por nosotros, con consola propia.',
     hint: 'Arrastra los globos',
-    ctaLineup: 'Ver el line-up',
     cta: 'Toca para saber la temática',
   },
 
@@ -64,7 +70,7 @@ export default {
       { id: 'concierto', label: 'Concierto', img: 'lifestyle-guitar' },
       { id: 'turista', label: 'Turista', img: 'lifestyle-globe' },
       { id: 'desfile', label: 'Desfile escolar', img: 'lifestyle-trumpet' },
-      { id: 'cumple', label: 'Cumpleaños', img: 'lifestyle-gift' },
+      { id: 'museo', label: 'Museo', img: 'lifestyle-picture' },
     ],
     // Siempre gana esta. Se dibuja con el regalo tachado.
     ganadora: { id: 'incorrecta', label: 'La ocasión incorrecta', img: 'lifestyle-gift' },
@@ -88,7 +94,7 @@ export default {
   formulario: {
     pasos: [
       { id: 'nombre', titulo: '¿Cómo te llamas?' },
-      { id: 'email', titulo: '¿A qué email te mandamos la entrada?' },
+      { id: 'email', titulo: '¿Cuál es tu email?', nota: 'Así te reconocemos si vuelves a entrar.' },
       { id: 'cancion', titulo: '¿Qué canción le pedirías al DJ?' },
     ],
     enviar: 'Generar mi entrada',
@@ -112,7 +118,10 @@ export default {
     yape: { texto: '¿Quieres colaborar?', qrImagen: '' }, // TODO
   },
 
+  // Email de confirmación (Resend). APAGADO por ahora: la entrada solo se muestra en pantalla.
+  // Para activarlo: activo: true + RESEND_API_KEY en Vercel + dominio verificado en Resend.
   email: {
+    activo: false,
     from: 'Huamanga Club <hola@fommo.studio>', // TODO confirmar remitente
     replyTo: '',
     asunto: 'Tu entrada para Huamanga Club · Edición 0',

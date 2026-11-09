@@ -8,6 +8,7 @@ import { fullName } from '../lib/api';
 import { formatNumero, prefersReducedMotion } from '../lib/motion';
 import { isMuted } from '../lib/sfx';
 import type { Guest } from '../types';
+import { Floaties } from '../components/Floaties';
 
 // Paleta globo para el ticket (en vez del naranja original).
 const TEXTURE = {
@@ -21,7 +22,7 @@ const TEXTURE = {
 const LAYOUT = { ...TICKET_LAYOUT, inkColor: '#0A1F44', watermarkColor: '#FFD6DE', watermarkOpacity: 0.7 };
 
 // Pantalla 6: la entrada generada con el nombre del invitado y su número.
-export function TicketScreen({ guest, onNext }: { guest: Guest; onNext: () => void }) {
+export function TicketScreen({ guest, yaExistia = false, onNext }: { guest: Guest; yaExistia?: boolean; onNext: () => void }) {
   const e = config.evento;
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(340);
@@ -58,7 +59,12 @@ export function TicketScreen({ guest, onNext }: { guest: Guest; onNext: () => vo
 
   return (
     <div ref={ref} className="screen justify-center gap-5">
-      <h2 className="text-inflated text-center text-[clamp(44px,13vw,64px)] leading-none">{config.ticket.titulo}</h2>
+      <Floaties items={[
+        { img: 'nature-star', x: '-3%', y: '3%', size: 100, rot: -10 },
+        { img: 'shapes-yellow-flower', x: '72%', y: '86%', size: 110 },
+      ]} />
+      <h2 className="text-inflated text-center text-[clamp(44px,13vw,64px)] leading-none md:text-[88px]">{config.ticket.titulo}</h2>
+      {yaExistia && <p className="-mt-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-ink">Ya tenías entrada con ese email. Aquí está otra vez.</p>}
 
       <div className="ticket-wrap drop-shadow-[0_18px_30px_rgba(10,31,68,0.28)]">
         <AdmitOneTicket
@@ -75,12 +81,15 @@ export function TicketScreen({ guest, onNext }: { guest: Guest; onNext: () => vo
         />
       </div>
 
-      <p className="after max-w-[420px] text-center text-base font-extrabold text-white drop-shadow">
+      <p className="after max-w-[420px] text-center text-base font-extrabold text-legible">
         {config.ticket.dressCode}
       </p>
-      <p className="after max-w-[420px] text-center text-sm font-semibold text-white/90">
-        También te la mandamos a <span className="font-extrabold">{guest.email}</span>.
-      </p>
+      {config.email.activo && (
+        <p className="after max-w-[420px] text-center text-sm font-semibold text-legible">
+          También te la mandamos a <span className="font-extrabold">{guest.email}</span>.
+        </p>
+      )}
+      <p className="after max-w-[420px] text-center text-sm font-semibold text-legible">Haz una captura para tenerla a mano.</p>
 
       <div className="after flex flex-wrap justify-center gap-3">
         <button className="btn-ghost" onClick={share}>

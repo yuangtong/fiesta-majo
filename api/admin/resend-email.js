@@ -1,9 +1,10 @@
 // POST /api/admin/resend-email — reenvío desde /admin (header x-admin-password).
-import { allowMethod, isAdmin, isEmail } from '../_lib/shared.js';
+import { allowMethod, config, isAdmin, isEmail } from '../_lib/shared.js';
 import { sendConfirmation } from '../_lib/email.js';
 
 export default async function handler(req, res) {
   if (!allowMethod(req, res, 'POST')) return;
+  if (!config.email.activo) return res.status(404).json({ error: 'El email está desactivado' });
   if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' });
   const { email, nombre, numero } = req.body || {};
   if (!isEmail(email) || !nombre) return res.status(400).json({ error: 'Missing email or nombre' });

@@ -29,7 +29,7 @@ export const Envelope = forwardRef<HTMLButtonElement, { to: string; onOpen: () =
             boxShadow: 'inset 0 -10px 24px rgb(0 0 0 / .18)',
           }}
         />
-        <span className="env-to absolute bottom-[12%] left-0 right-0 text-center font-display text-2xl text-white drop-shadow">
+        <span className="env-to absolute bottom-[12%] left-0 right-0 text-center font-display text-2xl text-legible">
           {to}
         </span>
         {/* Solapa */}

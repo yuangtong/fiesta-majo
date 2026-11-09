@@ -22,9 +22,8 @@ body {
 :focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 12px; }
 
 @layer components {
-  /* La pantalla deja pasar toques a las nubes del fondo; solo su contenido recibe toques. */
-  .screen { @apply pointer-events-none relative flex h-full w-full flex-col items-center overflow-y-auto px-5 py-10; }
-  .screen > * { pointer-events: auto; }
+  /* data-passthrough: un toque en un espacio vacío de la pantalla agarra la nube que esté debajo (ver Sky). */
+  .screen { @apply relative flex h-full w-full flex-col items-center overflow-y-auto overscroll-contain px-5 py-10; }
 
   /* Botón tipo globo: pastilla brillante que se aplasta al tocar */
   .btn-balloon {
@@ -56,6 +55,9 @@ body {
       0 2px 0 #ffd6de, 0 4px 0 #ffb3c1, 0 6px 0 var(--balloon),
       0 10px 18px rgb(217 38 74 / .45);
   }
+
+  /* Texto blanco legible aunque pase una nube blanca por detrás */
+  .text-legible { color: #fff; text-shadow: 0 1px 2px rgb(10 31 68 / .55), 0 2px 12px rgb(10 31 68 / .45); }
 
   .panel { @apply rounded-[28px] bg-white/90 p-5 text-ink backdrop-blur; box-shadow: 0 14px 40px rgb(10 31 68 / .12); }
   .field { @apply w-full rounded-2xl border-2 border-white bg-white px-4 py-4 text-lg font-semibold text-ink outline-none placeholder:text-ink/35 focus:border-balloon; }

@@ -6,6 +6,7 @@ import { submitRSVP } from '../lib/api';
 import { prefersReducedMotion } from '../lib/motion';
 import { pop, puff } from '../lib/sfx';
 import type { Guest } from '../types';
+import { Floaties } from '../components/Floaties';
 
 type Step = 0 | 1 | 2;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -14,7 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function FormScreen({ guest, onChange, onDone }: {
   guest: Guest;
   onChange: (data: Partial<Guest>) => void;
-  onDone: (numero: number | null) => void;
+  onDone: (numero: number | null, yaExistia?: boolean) => void;
 }) {
   const f = config.formulario;
   const [step, setStep] = useState<Step>(0);
@@ -54,9 +55,10 @@ export function FormScreen({ guest, onChange, onDone }: {
     const result = await submitRSVP(guest);
     setSending(false);
     if (result.status === 'ok') { pop(); onDone(result.numero); return; }
+    if (result.status === 'duplicate' && result.numero) { pop(); onDone(result.numero, true); return; }
     if (result.status === 'duplicate') {
       setStep(1);
-      setError('Ese email ya tiene entrada. Si fuiste tú, revisa tu bandeja (y spam).');
+      setError('Ese email ya tiene entrada.');
     } else {
       setError('No se pudo generar la entrada. Revisa tu conexión e inténtalo otra vez.');
     }
@@ -68,6 +70,10 @@ export function FormScreen({ guest, onChange, onDone }: {
 
   return (
     <form onSubmit={next} noValidate className="screen justify-center gap-6">
+      <Floaties items={[
+        { img: 'nature-comet', x: '72%', y: '4%', size: 110 },
+        { img: 'shapes-hearts', x: '-6%', y: '84%', size: 110, rot: -8 },
+      ]} />
       {/* Progreso: 3 globos que se inflan */}
       <div className="flex w-full max-w-[420px] items-center gap-3" aria-label={`Paso ${step + 1} de 3`}>
         {step > 0 && (
@@ -101,14 +107,17 @@ export function FormScreen({ guest, onChange, onDone }: {
           </>
         )}
         {step === 1 && (
+          <>
           <input ref={firstInput} className="field" type="email" inputMode="email" placeholder="tu@email.com" autoComplete="email"
             aria-labelledby={titleId} value={guest.email} onChange={(e) => onChange({ email: e.target.value })} />
+          <p className="text-sm font-semibold text-legible">{f.pasos[1].nota}</p>
+          </>
         )}
         {step === 2 && (
           <>
             <input ref={firstInput} className="field" placeholder="Artista – canción" aria-labelledby={titleId} maxLength={200}
               value={guest.cancion} onChange={(e) => onChange({ cancion: e.target.value })} />
-            <p className="text-sm font-semibold text-white drop-shadow">Opcional. Con esto armamos la playlist de la noche.</p>
+            <p className="text-sm font-semibold text-legible">Opcional. Con esto armamos la playlist de la noche.</p>
           </>
         )}
 

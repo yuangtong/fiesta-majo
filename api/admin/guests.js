@@ -1,9 +1,9 @@
 // GET /api/admin/guests — lista de invitados + estado del email (header x-admin-password).
-import { allowMethod, isAdmin } from '../_lib/shared.js';
+import { allowMethod, config, isAdmin } from '../_lib/shared.js';
 import { listRsvps } from '../_lib/db.js';
 
 async function fetchEmailStatuses() {
-  if (!process.env.RESEND_API_KEY) return [];
+  if (!config.email.activo || !process.env.RESEND_API_KEY) return [];
   try {
     const res = await fetch('https://api.resend.com/emails?limit=100', {
       headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` },

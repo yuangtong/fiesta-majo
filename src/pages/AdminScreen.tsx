@@ -88,8 +88,8 @@ export default function AdminScreen() {
   };
 
   const exportCSV = () => {
-    const headers = ['N°', 'Nombre', 'Email', 'Canción', 'Fecha', 'Email'];
-    const data = rows.map((r) => [formatNumero(r.numero), r.nombre, r.email, r.cancion, formatDate(r.submittedAt), STATUS[r.emailStatus] ?? r.emailStatus]);
+    const headers = ['N°', 'Nombre', 'Email', 'Canción', 'Fecha'];
+    const data = rows.map((r) => [formatNumero(r.numero), r.nombre, r.email, r.cancion, formatDate(r.submittedAt)]);
     const csv = [headers, ...data].map((line) => line.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
     const url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
     const a = document.createElement('a');
@@ -115,7 +115,7 @@ export default function AdminScreen() {
   return (
     <div className="mx-auto max-w-5xl p-4 text-ink">
       <div className="mb-4 flex items-center justify-between gap-2">
-        <h1 className="font-display text-3xl text-white drop-shadow">{config.evento.marca} · Admin</h1>
+        <h1 className="font-display text-3xl text-legible">{config.evento.marca} · Admin</h1>
         <div className="flex gap-2">
           <button className="btn-ghost" onClick={() => load(password)} aria-label="Recargar"><RefreshCw size={16} className={loading ? 'animate-spin' : ''} /></button>
           <button className="btn-ghost" onClick={exportCSV}><Download size={16} /> CSV</button>
@@ -132,7 +132,7 @@ export default function AdminScreen() {
       <div className="panel overflow-x-auto p-0">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-ink/10 text-xs text-ink/60">
-            <tr><th className="p-3">N°</th><th className="p-3">Nombre</th><th className="p-3">Email</th><th className="p-3">Canción</th><th className="p-3">Fecha</th><th className="p-3">Email</th><th className="p-3" /></tr>
+            <tr><th className="p-3">N°</th><th className="p-3">Nombre</th><th className="p-3">Email</th><th className="p-3">Canción</th><th className="p-3">Fecha</th>{config.email.activo && <><th className="p-3">Correo</th><th className="p-3" /></>}</tr>
           </thead>
           <tbody>
             {filtered.map((r) => (
@@ -142,12 +142,16 @@ export default function AdminScreen() {
                 <td className="p-3">{r.email}</td>
                 <td className="p-3">{r.cancion || '—'}</td>
                 <td className="whitespace-nowrap p-3">{formatDate(r.submittedAt)}</td>
-                <td className="p-3">{STATUS[r.emailStatus] ?? r.emailStatus}</td>
-                <td className="p-3">
-                  <button className="btn-ghost px-3 py-1.5 text-xs" onClick={() => resend(r)} disabled={sendingId === r.id}>
-                    <Mail size={12} /> {sentIds.has(r.id) ? 'Enviado' : sendingId === r.id ? '…' : 'Reenviar'}
-                  </button>
-                </td>
+                {config.email.activo && (
+                  <>
+                    <td className="p-3">{STATUS[r.emailStatus] ?? r.emailStatus}</td>
+                    <td className="p-3">
+                      <button className="btn-ghost px-3 py-1.5 text-xs" onClick={() => resend(r)} disabled={sendingId === r.id}>
+                        <Mail size={12} /> {sentIds.has(r.id) ? 'Enviado' : sendingId === r.id ? '…' : 'Reenviar'}
+                      </button>
+                    </td>
+                  </>
+                )}
               </tr>
             ))}
             {filtered.length === 0 && (

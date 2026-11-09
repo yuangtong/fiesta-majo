@@ -8,6 +8,7 @@ import { prefersReducedMotion } from '../lib/motion';
 import { Modal } from '../components/Modal';
 import { CrossedGift } from '../components/CrossedGift';
 import type { Guest } from '../types';
+import { Floaties } from '../components/Floaties';
 
 // Pantalla 7: todos los datos de la fiesta y acciones útiles.
 export function InfoScreen({ guest, total }: { guest: Guest; total: number | null }) {
@@ -41,8 +42,12 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
   };
 
   return (
-    <div className="pointer-events-none h-full w-full overflow-y-auto">
-      <div ref={ref} className="pointer-events-auto mx-auto flex w-full max-w-[460px] flex-col gap-4 px-5 pb-24 pt-10">
+    <div data-passthrough className="h-full w-full overflow-y-auto overscroll-contain">
+      <Floaties items={[
+        { img: 'nature-rainbow', x: '70%', y: '2%', size: 120 },
+        { img: 'shapes-star', x: '-5%', y: '86%', size: 96, rot: 12 },
+      ]} />
+      <div ref={ref} data-passthrough className="mx-auto flex w-full max-w-[460px] flex-col gap-4 px-5 pb-24 pt-10">
         <div className="flex flex-col items-start gap-1.5 font-dot font-black uppercase">
           <span className="bg-white px-2 text-lg text-ink">{e.marca}</span>
           <span className="bg-ink px-2 text-[clamp(34px,10vw,46px)] leading-none text-white">{e.edicion}</span>
@@ -93,7 +98,7 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
           <button className="btn-ghost" onClick={downloadICS}><Calendar size={18} /> Calendario</button>
           <button className="btn-ghost" onClick={shareWhatsApp}><Share2 size={18} /> WhatsApp</button>
           <button className="btn-ghost" onClick={copy}><Copy size={18} /> {copied ? '¡Copiado!' : 'Copiar link'}</button>
-          {guest.email && (
+          {config.email.activo && guest.email && (
             <button className="btn-ghost" onClick={resend} disabled={emailState === 'sending'}>
               <Mail size={18} />
               {emailState === 'sending' ? 'Enviando…' : emailState === 'sent' ? 'Enviado' : emailState === 'error' ? 'Reintentar' : 'Reenviar email'}

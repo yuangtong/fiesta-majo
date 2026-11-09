@@ -4,7 +4,8 @@ import confetti from 'canvas-confetti';
 import { config } from '../config';
 import { Envelope } from '../components/Envelope';
 import { BubbleWords } from '../components/BubbleWords';
-import { SplineScene } from '../components/SplineScene';
+import { BalloonTitle } from '../components/BalloonTitle';
+import { Floaties } from '../components/Floaties';
 import { plasticine, prefersReducedMotion } from '../lib/motion';
 import { pop, puff, squeak } from '../lib/sfx';
 
@@ -81,15 +82,25 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
   }, [phase]);
 
   if (phase === 'invitado') {
-    const fallbackTitle = <BubbleWords text={i.titulo} className="text-inflated text-center text-[clamp(56px,17vw,92px)] leading-[0.95]" />;
+    const fallbackTitle = <BubbleWords text={i.titulo} className="text-inflated text-center text-[clamp(56px,17vw,120px)] leading-[0.95]" />;
     return (
       <div ref={titleRef} className="screen justify-center gap-6 text-center">
-        {config.spline.invitadoActivo ? (
-          <SplineScene scene={config.spline.invitado} fallback={fallbackTitle} className="h-[46vh] w-full" />
+        <Floaties items={[
+          { img: 'nature-comet', x: '68%', y: '6%', size: 120 },
+          { img: 'shapes-star', x: '-4%', y: '72%', size: 110, rot: -14 },
+        ]} />
+        {config.titulos.invitado || config.spline.invitadoActivo ? (
+          <BalloonTitle
+            text={i.titulo}
+            img={config.titulos.invitado}
+            spline={config.spline.invitadoActivo ? config.spline.invitado : undefined}
+            className="h-[42svh] max-h-[460px] w-full max-w-[560px]"
+            textClass="text-[clamp(56px,17vw,120px)]"
+          />
         ) : (
           fallbackTitle
         )}
-        <p className="after font-display text-[clamp(24px,7vw,34px)] leading-tight text-white drop-shadow-[0_3px_0_rgba(217,38,74,0.6)]">
+        <p className="after font-display text-[clamp(24px,7vw,34px)] leading-tight text-legible">
           {i.subtitulo}
         </p>
         <button className="after btn-balloon mt-4" onClick={onNext}>{i.cta2}</button>
@@ -99,8 +110,14 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
 
   return (
     <div ref={rootRef} className="screen justify-center">
+      <Floaties items={[
+          { img: 'nature-sun', x: '-6%', y: '8%', size: 120, rot: -8 },
+          { img: 'shapes-hearts', x: '72%', y: '14%', size: 100, rot: 12 },
+          { img: 'nature-rainbow', x: '-4%', y: '78%', size: 130 },
+          { img: 'shapes-yellow-flower', x: '74%', y: '80%', size: 100, rot: -10 },
+        ]} />
       <div className="env-stage relative flex flex-col items-center gap-8">
-        <p className="font-dot text-lg font-black uppercase text-white drop-shadow">
+        <p className="font-dot text-lg font-black uppercase text-legible">
           {config.evento.marca} · {config.evento.edicion}
         </p>
         <div className="relative">
