@@ -70,3 +70,27 @@ Reemplazar [OBJETO] por:
 - Si sale con sombra o degradado en el fondo, pedir: "remove the shadow, keep the background perfectly flat #00FF00".
 - Si el objeto sale verde por el reflejo: "the object must not reflect the green background".
 - Subir los archivos aquí al chat, tal cual salen (PNG o JPG). Yo los recorto y los optimizo.
+
+## 4. Apertura "revienta los globos → el sobre se infla"
+Mismo bloque de estilo (fondo verde #00FF00). Una imagen por prompt.
+
+Globos para reventar (4):
+```text
+A single round latex party balloon with a curly ribbon string, glossy [COLOR], front view.
+```
+[COLOR]: hot pink · sky blue · sunny yellow · silver chrome foil (para el plateado: "round silver chrome foil balloon").
+
+El sobre en 3 estados (mismo sobre, mismo ángulo, mismo encuadre en las 3):
+```text
+A deflated foil balloon shaped like a closed envelope, iridescent pink and silver mylar, flat and crumpled,
+with soft wrinkles, lying limp, front view, centered.
+```
+```text
+The same envelope-shaped foil balloon fully inflated and puffy, iridescent pink and silver mylar, glossy,
+seams visible, closed flap, front view, centered.
+```
+```text
+The same envelope-shaped foil balloon fully inflated, with the top flap open and folded back, empty inside,
+iridescent pink and silver mylar, glossy, front view, centered.
+```
+Tip: generar primero el inflado cerrado y usarlo como referencia para los otros dos, para que salgan iguales.
