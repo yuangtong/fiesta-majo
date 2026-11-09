@@ -8,11 +8,13 @@ import { squeak } from '../lib/sfx';
 gsap.registerPlugin(Draggable);
 
 // Título en letras globo. Prioridad: imagen (IA) → texto inflado con CSS.
-export function BalloonTitle({ text, img, className = '', textClass = '' }: {
+export function BalloonTitle({ text, img, className = '', textClass = '', fromScale = 0.2 }: {
   text: string;
   img?: string;
   className?: string;
   textClass?: string;
+  /** Escala inicial de la entrada (0.2 = se infla desde chico; ~1.2 = viene de un acercamiento de cámara) */
+  fromScale?: number;
 }) {
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -23,7 +25,7 @@ export function BalloonTitle({ text, img, className = '', textClass = '' }: {
     const reduced = prefersReducedMotion();
     const ctx = gsap.context(() => {
       if (!reduced) {
-        gsap.fromTo(el, { scale: 0.2, rotation: -8 }, { scale: 1, rotation: 0, duration: 1.3, ease: 'elastic.out(1, 0.4)' });
+        gsap.fromTo(el, { scale: fromScale, rotation: fromScale < 1 ? -8 : 0 }, { scale: 1, rotation: 0, duration: fromScale < 1 ? 1.3 : 0.9, ease: fromScale < 1 ? 'elastic.out(1, 0.4)' : 'power3.out' });
         gsap.to(el, { y: -10, rotation: 1.5, duration: 2.8, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.3 });
       }
       Draggable.create(el, {
@@ -42,7 +44,7 @@ export function BalloonTitle({ text, img, className = '', textClass = '' }: {
   if (img) {
     return (
       <div className={`grid place-items-center ${className}`}>
-        <img ref={imgRef} src={img} alt={text} draggable={false} className="max-h-full w-full cursor-grab touch-none select-none object-contain drop-shadow-[0_20px_30px_rgba(10,31,68,0.25)]" />
+        <img ref={imgRef} src={img} alt={text} draggable={false} className="drag-self max-h-full w-full cursor-grab touch-none select-none object-contain drop-shadow-[0_20px_30px_rgba(10,31,68,0.25)]" />
       </div>
     );
   }

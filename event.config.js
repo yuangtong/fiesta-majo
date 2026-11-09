@@ -40,6 +40,7 @@ export default {
   musica: '',
 
   intro: {
+    reventar: 'Revienta los globos',
     cta: 'Toca para abrir',
     para: 'Para ti',
     titulo: 'Estás invitado',

@@ -9,7 +9,12 @@ export interface Floaty { img: string; x: string; y: string; size: number; rot?:
 // Juguetes alrededor del contenido: entran rebotando, se balancean despacio y se pueden arrastrar.
 // Con `wander`, además pasean lentamente por toda la pantalla (como las nubes) y retoman el paseo al soltarlos.
 // Van DETRÁS del contenido (se agarran tocando un espacio vacío, ver installPassthrough) y pasan adelante al arrastrarlos.
-export function Floaties({ items, wander = false }: { items: Floaty[]; wander?: boolean }) {
+export function Floaties({ items, wander = false, enterFrom }: {
+  items: Floaty[];
+  wander?: boolean;
+  /** Punto de la pantalla (px) desde donde salen volando al aparecer (ej. el centro del sobre) */
+  enterFrom?: { x: number; y: number } | null;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,7 +43,16 @@ export function Floaties({ items, wander = false }: { items: Floaty[]; wander?: 
       toys.forEach((el, i) => {
         const inner = el.firstElementChild as HTMLElement;
         if (reduced) return;
-        gsap.from(inner, { scale: 0, rotation: -40, duration: 1, delay: 0.15 + i * 0.08, ease: 'elastic.out(1, 0.45)' });
+        if (enterFrom) {
+          // Sale disparado desde el punto de origen hasta su lugar
+          const r = el.getBoundingClientRect();
+          gsap.from(el, {
+            x: enterFrom.x - (r.left + r.width / 2), y: enterFrom.y - (r.top + r.height / 2),
+            scale: 0.15, rotation: gsap.utils.random(-90, 90), duration: 1.1, delay: i * 0.05, ease: 'back.out(1.4)',
+          });
+        } else {
+          gsap.from(inner, { scale: 0, rotation: -40, duration: 1, delay: 0.15 + i * 0.08, ease: 'elastic.out(1, 0.45)' });
+        }
         gsap.to(inner, { y: i % 2 ? 12 : -12, rotation: i % 2 ? 7 : -7, duration: 4 + (i % 3) * 1.3, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1 });
         gsap.delayedCall(1.5 + gsap.utils.random(0, 2), () => walk(el));
       });

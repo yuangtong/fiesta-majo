@@ -65,8 +65,10 @@ export function makeThrowable(targets: gsap.DOMTarget, opts: ThrowOptions = {}) 
 // La pantalla queda encima del cielo y de los juguetes de fondo (para hacer scroll y leer).
 // Si el toque cae en un espacio vacío y hay algo arrastrable debajo, se empieza a arrastrar eso.
 export function installPassthrough() {
-  const isEmptySpot = (t: EventTarget | null) =>
-    t instanceof HTMLElement && (t.hasAttribute('data-passthrough') || t.classList.contains('screen'));
+  // Solo botones, enlaces, campos y cosas que ya se arrastran por sí mismas bloquean el toque;
+  // en cualquier otro punto (texto, títulos, contenedores), si hay un juguete o nube debajo, se agarra.
+  const INTERACTIVE = 'button, a, input, textarea, select, label, iframe, [role="button"], .sticker, .rcard, .toy, .cloud, .htoy, .hdrag, .drag-self';
+  const isEmptySpot = (t: EventTarget | null) => t instanceof Element && !t.closest(INTERACTIVE);
   const onDown = (ev: MouseEvent | TouchEvent) => {
     if (!isEmptySpot(ev.target)) return;
     const p = 'touches' in ev ? ev.touches[0] : ev;
