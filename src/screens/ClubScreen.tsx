@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { config } from '../config';
+import { toyImg } from '../lib/motion';
 import { ClubHero } from '../components/ClubHero';
 import { prefersReducedMotion } from '../lib/motion';
 
@@ -45,6 +46,8 @@ export function ClubScreen({ onNext }: { onNext: () => void }) {
           <span className="row bg-white px-2 text-xl text-ink md:text-2xl">{e.distrito}</span>
 
           <span className="row mt-4 bg-white px-2 text-sm text-ink md:text-base">Sets de</span>
+          <img {...toyImg('globos/hipo', '(min-width: 768px) 220px, 40vw')} alt="" draggable={false}
+            className="anim-bob pointer-events-none absolute -bottom-8 right-0 w-[30%] max-w-[200px] drop-shadow-[0_14px_18px_rgba(10,31,68,0.22)] md:-right-40 md:bottom-[-10px] md:w-[200px]" />
           {c.lineup.map((l) => (
             <span key={l.nombre} className="row bg-ink px-2 text-xl normal-case text-white md:text-2xl">
               {l.hora && <span className="text-balloon-light">{l.hora} </span>}{l.nombre}

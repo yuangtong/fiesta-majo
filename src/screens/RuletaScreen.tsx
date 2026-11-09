@@ -122,6 +122,9 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
         { img: 'globos/perrito', x: '-8%', y: '82%', size: 120, rot: 8 },
         { img: 'lifestyle-glasses', x: '82%', y: '40%', size: 76, rot: 14 },
       ]} />
+      {phase === 'resultado' && (
+        <Floaties items={[{ img: 'globos/pollito', x: '74%', y: '62%', size: 112, rot: 6 }]} />
+      )}
       <div className="text-center">
         <p className="font-dot text-lg font-black uppercase text-legible">{r.subtitulo}</p>
         <h2 className="text-inflated text-[clamp(44px,13vw,64px)] leading-none">{r.titulo}</h2>

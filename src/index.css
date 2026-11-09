@@ -84,3 +84,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* Balanceo suave para personajes fijos (no arrastrables) */
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
+.anim-bob { animation: bob 4.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .anim-bob { animation: none; } }

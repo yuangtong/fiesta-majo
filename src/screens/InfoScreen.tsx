@@ -4,7 +4,7 @@ import { Calendar, Copy, Gift, Mail, MapPin, Music } from 'lucide-react';
 import { config } from '../config';
 import { copyLink, downloadICS, mapsUrl } from '../lib/actions';
 import { resendConfirmation } from '../lib/api';
-import { prefersReducedMotion } from '../lib/motion';
+import { prefersReducedMotion, toyImg } from '../lib/motion';
 import { Modal } from '../components/Modal';
 import { CrossedGift } from '../components/CrossedGift';
 import type { Guest } from '../types';
@@ -77,7 +77,9 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
           </div>
         </section>
 
-        <section className="panel">
+        <section className="panel relative">
+          <img {...toyImg('globos/alien', '110px')} alt="" draggable={false}
+            className="anim-bob pointer-events-none absolute -right-3 -top-16 w-[96px] drop-shadow-[0_10px_14px_rgba(10,31,68,0.22)]" />
           <h3 className="mb-3 text-sm font-extrabold text-ink/60">Reglas de la casa</h3>
           <ol className="space-y-2">
             {info.reglas.map((r, i) => (

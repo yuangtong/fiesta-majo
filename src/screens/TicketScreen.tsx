@@ -64,7 +64,7 @@ export function TicketScreen({ guest, yaExistia = null, onNext }: { guest: Guest
     <div ref={ref} className="screen screen-center gap-5">
       <Floaties items={[
         { img: 'shapes-hearts', x: '76%', y: '88%', size: 96 },
-        { img: 'globos/perrito', x: '-10%', y: '87%', size: 104 },
+        { img: 'globos/dino', x: '-10%', y: '82%', size: 120, rot: -4 },
       ]} />
       <h2 className="text-inflated text-center text-[clamp(44px,13vw,64px)] leading-none md:text-[88px]">{config.ticket.titulo}</h2>
       {yaExistia && (

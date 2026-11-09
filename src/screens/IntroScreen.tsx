@@ -16,10 +16,10 @@ import { pop, puff, squeak } from '../lib/sfx';
 //  5) corte al título grande; los juguetes salen volando desde el sobre y se quedan flotando.
 
 const BALLOONS = [
-  { img: 'globos/globo-rosa', color: '#FF3E8A', x: '-3%', y: '4%', w: 22, rot: -10 },
-  { img: 'globos/globo-azul', color: '#3FB4F0', x: '77%', y: '3%', w: 21, rot: 8 },
-  { img: 'globos/globo-amarillo', color: '#FFD43B', x: '2%', y: '56%', w: 20, rot: -6 },
-  { img: 'globos/globo-plata', color: '#D9DEE6', x: '75%', y: '54%', w: 23, rot: 10 },
+  { img: 'globos/globo-rosa', color: '#FF3E8A', x: '0%', y: '8%', w: 22, rot: -10 },
+  { img: 'globos/globo-azul', color: '#3FB4F0', x: '80%', y: '7%', w: 21, rot: 8 },
+  { img: 'globos/globo-amarillo', color: '#FFD43B', x: '1%', y: '58%', w: 20, rot: -6 },
+  { img: 'globos/globo-plata', color: '#D9DEE6', x: '79%', y: '55%', w: 23, rot: 10 },
 ];
 const CONFETTI = ['#FF4D6D', '#FFFFFF', '#4BB1F8', '#FFD43B', '#7B5CFF'];
 const SOBRE = (n: 'desinflado' | 'inflado' | 'abierto') => ({
@@ -187,24 +187,25 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
 
   return (
     <div ref={rootRef} className="screen screen-center overflow-hidden">
-      {/* Globos para reventar (son botones, van encima de todo) */}
-      {BALLOONS.map((b, k) => !popped[k] && (
-        <button
-          key={b.img}
-          type="button"
-          aria-label={`Reventar globo ${k + 1} de ${BALLOONS.length}`}
-          onClick={(e) => popBalloon(k, e.currentTarget)}
-          className="balloon-btn absolute z-30 cursor-pointer"
-          style={{ left: b.x, top: b.y, width: `clamp(72px, ${b.w}vw, ${b.w * 6}px)` }}
-        >
-          <span className="balloon-float block" style={{ transform: `rotate(${b.rot}deg)` }}>
-            <img {...toyImg(b.img, `(min-width: 768px) ${b.w * 6}px, ${b.w}vw`)} alt="" draggable={false}
-              className="w-full drop-shadow-[0_14px_18px_rgba(10,31,68,0.22)]" />
-          </span>
-        </button>
-      ))}
+      <div className="env-stage relative z-10 flex w-[min(100%,720px)] flex-col items-center gap-6">
+        {/* Globos para reventar: alrededor del sobre (en % del escenario, no de la pantalla) */}
+        {BALLOONS.map((b, k) => !popped[k] && (
+          <button
+            key={b.img}
+            type="button"
+            aria-label={`Reventar globo ${k + 1} de ${BALLOONS.length}`}
+            onClick={(e) => popBalloon(k, e.currentTarget)}
+            className="balloon-btn absolute z-30 cursor-pointer"
+            style={{ left: b.x, top: b.y, width: `clamp(72px, ${b.w}vw, ${b.w * 6}px)` }}
+          >
+            <span className="balloon-float block" style={{ transform: `rotate(${b.rot}deg)` }}>
+                <img {...toyImg(b.img, `(min-width: 768px) ${b.w * 6}px, ${b.w}vw`)} alt="" draggable={false}
+                  className="w-full drop-shadow-[0_14px_18px_rgba(10,31,68,0.22)]" />
+            </span>
+          </button>
+        ))}
 
-      <div className="env-stage relative z-10 flex flex-col items-center gap-6">
+
         <p className="intro-ui font-dot text-lg font-black uppercase text-legible">
           {config.evento.marca} · {config.evento.vol}
         </p>

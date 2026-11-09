@@ -40,6 +40,7 @@ const WIDE: Layer[] = [
   { img: 'globos/flor', x: 14, y: 76, w: 10, rot: -14, depth: 1.5 },
   { img: 'shapes-hearts', x: 28, y: 78, w: 7, rot: 10, depth: 1.3 },
   { img: 'globos/cerdito', x: 26, y: 68, w: 7, rot: -4, depth: 1.6 },
+  { img: 'globos/lagarto', x: 33, y: 63, w: 8, rot: 4, depth: 1.7 },
   { img: 'shapes-hearts', x: 90, y: 64, w: 6, rot: 14, depth: 1.3, tint: PURPLE },
   { img: 'globos/flor', x: 85, y: 80, w: 13, rot: 8, depth: 1.8 },
 ];
@@ -53,8 +54,9 @@ const TALL: Layer[] = [
   { img: 'shapes-hearts', x: 4, y: 49, w: 22, rot: -8, depth: 1.2 },
   { img: 'shapes-hearts', x: 80, y: 46, w: 18, rot: 14, depth: 1.2, tint: PURPLE },
   { img: 'globos/perrito', x: -6, y: 63, w: 50, depth: 1.8 },
-  { img: 'globos/cerdito', x: 66, y: 72, w: 28, rot: 4, depth: 1.7 },
-  { img: 'globos/flor', x: 34, y: 84, w: 26, rot: 18, depth: 1.5 },
+  { img: 'globos/cerdito', x: 36, y: 73, w: 26, rot: 4, depth: 1.7 },
+  { img: 'globos/lagarto', x: 68, y: 71, w: 28, rot: 6, depth: 1.6 },
+  { img: 'globos/flor', x: -4, y: 88, w: 22, rot: 18, depth: 1.5 },
 ];
 
 const useWide = () => {
