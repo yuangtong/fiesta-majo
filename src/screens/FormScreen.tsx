@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Plus, X } from 'lucide-react';
 import { config } from '../config';
 import { submitRSVP } from '../lib/api';
 import { prefersReducedMotion } from '../lib/motion';
@@ -10,6 +10,7 @@ import { Floaties } from '../components/Floaties';
 
 type Step = 0 | 1 | 2;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const MAX_CANCIONES = 5;
 
 // Pantalla 5: tus datos, una pregunta por pantalla (nombre → email → canción). Al final genera la entrada.
 export function FormScreen({ guest, onChange, onDone }: {
@@ -65,15 +66,27 @@ export function FormScreen({ guest, onChange, onDone }: {
     shake();
   };
 
+  // Nueva fila de canción: entra inflándose y recibe el foco
+  const addSong = () => {
+    puff();
+    onChange({ canciones: [...guest.canciones, ''] });
+    requestAnimationFrame(() => {
+      const rows = panelRef.current?.querySelectorAll<HTMLElement>('.song');
+      const last = rows?.[rows.length - 1];
+      last?.querySelector('input')?.focus();
+      if (last && !prefersReducedMotion()) gsap.fromTo(last, { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
+    });
+  };
+
   const back = () => { setError(''); setStep((s) => Math.max(0, s - 1) as Step); };
   const titleId = `paso-${step}`;
 
   return (
     <form onSubmit={next} noValidate className="screen justify-center gap-6">
       <Floaties items={[
-        { img: 'lifestyle-trumpet', x: '70%', y: '4%', size: 120, rot: -8 },
-        { img: 'nature-cat', x: '-6%', y: '82%', size: 110, rot: -8 },
-        { img: 'shapes-cube', x: '80%', y: '80%', size: 80, rot: 12 },
+        { img: 'lifestyle-trumpet', x: '82%', y: '70%', size: 84, rot: -8 },
+        { img: 'nature-cat', x: '-8%', y: '89%', size: 86, rot: -8 },
+        { img: 'shapes-cube', x: '86%', y: '90%', size: 60, rot: 12 },
       ]} />
       {/* Progreso: 3 globos que se inflan */}
       <div className="flex w-full max-w-[420px] items-center gap-3" aria-label={`Paso ${step + 1} de 3`}>
@@ -116,9 +129,35 @@ export function FormScreen({ guest, onChange, onDone }: {
         )}
         {step === 2 && (
           <>
-            <input ref={firstInput} className="field" placeholder="Artista – canción" aria-labelledby={titleId} maxLength={200}
-              value={guest.cancion} onChange={(e) => onChange({ cancion: e.target.value })} />
-            <p className="text-sm font-semibold text-legible">Opcional. Con esto armamos la playlist de la noche.</p>
+            {guest.canciones.map((c, i) => (
+              <div key={i} className="song relative">
+                <input
+                  ref={i === 0 ? firstInput : undefined}
+                  className="field pr-12"
+                  placeholder={i === 0 ? 'Artista – canción' : `Canción ${i + 1}`}
+                  aria-label={`Canción ${i + 1}`}
+                  aria-labelledby={i === 0 ? titleId : undefined}
+                  maxLength={200}
+                  value={c}
+                  onChange={(e) => onChange({ canciones: guest.canciones.map((v, k) => (k === i ? e.target.value : v)) })}
+                />
+                {guest.canciones.length > 1 && (
+                  <button type="button" aria-label={`Quitar canción ${i + 1}`}
+                    onClick={() => onChange({ canciones: guest.canciones.filter((_, k) => k !== i) })}
+                    className="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-ink/50 hover:bg-ink/5">
+                    <X size={18} />
+                  </button>
+                )}
+              </div>
+            ))}
+            {guest.canciones.length < MAX_CANCIONES && (
+              <button type="button" onClick={addSong} className="btn-ghost self-start">
+                <Plus size={18} /> Agregar otra canción
+              </button>
+            )}
+            <p className="text-sm font-semibold text-legible">
+              Opcional, hasta {MAX_CANCIONES}. Con esto armamos la playlist de la noche.
+            </p>
           </>
         )}
 

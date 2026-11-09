@@ -70,6 +70,15 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
     tl.to(q('.env-stage'), { y: 40, opacity: 0, duration: 0.4, ease: 'power2.in' }, '+=0.05');
   };
 
+  // El sobre flota despacio mientras espera el toque
+  useEffect(() => {
+    if (phase !== 'sobre' || prefersReducedMotion() || !rootRef.current) return;
+    const tween = gsap.to(rootRef.current.querySelector('.env-float'), {
+      y: -10, rotation: 1.5, duration: 3.4, ease: 'sine.inOut', yoyo: true, repeat: -1,
+    });
+    return () => { tween.kill(); };
+  }, [phase]);
+
   useEffect(() => {
     if (phase !== 'invitado' || !titleRef.current) return;
     squeak(0.15);
@@ -85,7 +94,7 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
     const fallbackTitle = <BubbleWords text={i.titulo} className="text-inflated text-center text-[clamp(56px,17vw,120px)] leading-[0.95]" />;
     return (
       <div ref={titleRef} className="screen justify-center gap-6 text-center">
-        <Floaties items={[
+        <Floaties wander items={[
           { img: 'globos/flor', x: '-8%', y: '6%', size: 120, rot: -10 },
           { img: 'nature-butterfly', x: '72%', y: '10%', size: 100, rot: 12 },
           { img: 'nature-berries', x: '-4%', y: '76%', size: 100 },
@@ -112,7 +121,7 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
 
   return (
     <div ref={rootRef} className="screen justify-center">
-      <Floaties items={[
+      <Floaties wander items={[
           { img: 'nature-comet', x: '68%', y: '6%', size: 120 },
           { img: 'globos/flor', x: '-8%', y: '74%', size: 120, rot: -14 },
           { img: 'shapes-hearts', x: '76%', y: '78%', size: 96, rot: 10 },
@@ -121,7 +130,7 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
         <p className="font-dot text-lg font-black uppercase text-legible">
           {config.evento.marca} · {config.evento.edicion}
         </p>
-        <div className="relative">
+        <div className="env-float relative">
           <Envelope to={i.para} onOpen={open} disabled={phase !== 'sobre'}>
             <p className="font-dot text-xs font-black uppercase text-balloon">{config.evento.marca}</p>
             <p className="font-display text-xl leading-tight text-ink">{i.titulo}</p>

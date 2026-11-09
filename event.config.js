@@ -32,8 +32,13 @@ export default {
   titulos: {
     club: '/images/titulos/huamanga-club.webp', // 3 líneas, para celular
     invitado: '/images/titulos/estas-invitado.webp',
-    // Composición completa (cielo + título + globos + "Vol 0."): se usa tal cual en pantallas horizontales.
+    // En computadora el título va en 2 líneas como la referencia: "HUAMANGA" y "CLUB" por separado.
+    // Vacío = se usa el título de 3 líneas (club).
+    palabraHuamanga: '', // ej. '/images/titulos/huamanga.webp'
+    palabraClub: '', // ej. '/images/titulos/club.webp'
+    // Composición de referencia (solo guía visual; la escena se arma por capas en ClubHero).
     clubEscena: '/images/titulos/huamanga-club-vol0.webp',
+    vol: '/images/titulos/vol0.webp', // "VOL 0" en globos negros (versión vertical)
   },
 
   // Música de fondo (archivo en public/audio/). Vacío = sin música, solo efectos.
@@ -75,8 +80,9 @@ export default {
       { id: 'desfile', label: 'Desfile escolar', img: 'lifestyle-trumpet' },
       { id: 'museo', label: 'Museo', img: 'lifestyle-picture' },
     ],
-    // Siempre gana esta. Se dibuja con el regalo tachado.
-    ganadora: { id: 'incorrecta', label: 'La ocasión incorrecta', img: 'lifestyle-gift' },
+    // Siempre gana esta. En la ruleta se ve como una carta más ("Cumpleaños") para no arruinar la sorpresa;
+    // al ganar se tacha y se revela "La ocasión incorrecta".
+    ganadora: { id: 'incorrecta', label: 'La ocasión incorrecta', cartaLabel: 'Cumpleaños', img: 'lifestyle-gift' },
   },
 
   tematica: {

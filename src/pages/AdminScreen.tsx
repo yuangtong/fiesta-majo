@@ -75,7 +75,7 @@ export default function AdminScreen() {
     () => rows.filter((r) => `${r.nombre} ${r.email} ${r.cancion}`.toLowerCase().includes(search.toLowerCase())),
     [rows, search],
   );
-  const songs = rows.filter((r) => r.cancion).length;
+  const songs = rows.reduce((n, r) => n + (r.cancion ? r.cancion.split('\n').length : 0), 0);
 
   const resend = async (r: Row) => {
     setSendingId(r.id);
@@ -89,7 +89,7 @@ export default function AdminScreen() {
 
   const exportCSV = () => {
     const headers = ['N°', 'Nombre', 'Email', 'Canción', 'Fecha'];
-    const data = rows.map((r) => [formatNumero(r.numero), r.nombre, r.email, r.cancion, formatDate(r.submittedAt)]);
+    const data = rows.map((r) => [formatNumero(r.numero), r.nombre, r.email, r.cancion.split('\n').join(' / '), formatDate(r.submittedAt)]);
     const csv = [headers, ...data].map((line) => line.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
     const url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
     const a = document.createElement('a');
@@ -140,7 +140,7 @@ export default function AdminScreen() {
                 <td className="p-3 font-dot font-black">{formatNumero(r.numero)}</td>
                 <td className="p-3 font-bold">{r.nombre}</td>
                 <td className="p-3">{r.email}</td>
-                <td className="p-3">{r.cancion || '—'}</td>
+                <td className="whitespace-pre-line p-3">{r.cancion || '—'}</td>
                 <td className="whitespace-nowrap p-3">{formatDate(r.submittedAt)}</td>
                 {config.email.activo && (
                   <>

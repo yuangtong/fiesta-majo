@@ -4,6 +4,6 @@ export interface Guest {
   nombre: string;
   apellido: string;
   email: string;
-  cancion: string;
+  canciones: string[]; // hasta 5 (MAX_CANCIONES)
   numero: number | null;
 }

@@ -5,7 +5,7 @@ import { config } from '../config';
 import { CrossedGift } from '../components/CrossedGift';
 import { Floaties } from '../components/Floaties';
 import { plasticine, prefersReducedMotion } from '../lib/motion';
-import { tada, tick } from '../lib/sfx';
+import { pop, tada, tick } from '../lib/sfx';
 
 // Pantalla 3: ruleta de temáticas. Parece aleatoria, pero SIEMPRE cae en "La ocasión incorrecta".
 // Inspirada en scroll-morph-hero (cartas dispersas → fila → círculo), hecha con GSAP.
@@ -90,7 +90,6 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
   };
 
   const reveal = () => {
-    tada();
     confetti({ particleCount: 120, spread: 110, origin: { y: 0.5 }, colors: ['#FF4D6D', '#FFFFFF', '#4BB1F8', '#FFD43B'], disableForReducedMotion: true });
     const others = gsap.utils.toArray<HTMLElement>('.rcard:not(.is-winner)', stageRef.current);
     gsap.to(others, { opacity: 0, scale: 0.5, duration: 0.4, stagger: 0.02 });
@@ -98,20 +97,30 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
     setPhase('resultado');
   };
 
+  // Sale "Cumpleaños"… y de golpe lo tacha una X inflada: es "La ocasión incorrecta".
   useEffect(() => {
-    if (phase !== 'resultado' || !resultRef.current) return;
-    gsap.fromTo(resultRef.current.children, { scale: 0.3, opacity: 0, y: 20 }, {
-      scale: 1, opacity: 1, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.55)', stagger: 0.12, delay: 0.35,
-    });
+    const el = resultRef.current;
+    if (phase !== 'resultado' || !el) return;
+    const label = el.querySelector('.res-label') as HTMLElement;
+    const tl = gsap.timeline({ delay: 0.35 });
+    tl.fromTo(el.children, { scale: 0.3, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.55)', stagger: 0.12 })
+      .set(el.querySelectorAll('.xbar'), { scaleX: 0 }, 0)
+      .add(() => pop(), 1.45)
+      .to(el.querySelectorAll('.xbar'), { scaleX: 1, duration: 0.25, ease: 'back.out(2.5)', stagger: 0.12 }, 1.45)
+      .to(label, { scale: 0.6, opacity: 0, duration: 0.18 }, 1.75)
+      .add(() => { label.textContent = r.ganadora.label; tada(); }, 1.95)
+      .to(label, { scale: 1, opacity: 1, duration: 0.6, ease: 'elastic.out(1, 0.5)' }, 1.95);
+    return () => { tl.kill(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
   return (
     <div className="screen gap-4 md:justify-center">
       <Floaties items={[
-        { img: 'shapes-crown', x: '-5%', y: '3%', size: 96, rot: -10 },
+        { img: 'shapes-crown', x: '-8%', y: '48%', size: 76, rot: -10 },
         { img: 'nature-rainbow', x: '70%', y: '84%', size: 130 },
         { img: 'globos/perrito', x: '-8%', y: '82%', size: 120, rot: 8 },
-        { img: 'lifestyle-glasses', x: '74%', y: '4%', size: 96, rot: 14 },
+        { img: 'lifestyle-glasses', x: '82%', y: '40%', size: 76, rot: 14 },
       ]} />
       <div className="text-center">
         <p className="font-dot text-lg font-black uppercase text-legible">{r.subtitulo}</p>
@@ -125,11 +134,12 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
           {cards.map((c) => (
             <div
               key={c.id}
-              className={`rcard absolute left-0 top-0 flex flex-col items-center justify-between rounded-2xl bg-white p-1.5 opacity-0 shadow-[0_8px_18px_rgba(10,31,68,0.18)] ${'winner' in c ? 'is-winner ring-4 ring-balloon' : ''}`}
+              className={`rcard absolute left-0 top-0 flex flex-col items-center justify-between rounded-2xl bg-white p-1.5 opacity-0 shadow-[0_8px_18px_rgba(10,31,68,0.18)] ${'winner' in c ? 'is-winner' : ''}`}
               style={{ width: CARD_W, height: CARD_H }}
             >
-              {'winner' in c ? <CrossedGift size={56} /> : <img src={plasticine(c.img)} alt="" className="h-14 w-14 object-contain" />}
-              <span className="text-center text-[10px] font-extrabold leading-tight text-ink">{c.label}</span>
+              {/* Todas las cartas se ven igual: la ganadora no se delata hasta que sale */}
+              <img src={plasticine(c.img)} alt="" className="h-14 w-14 object-contain" />
+              <span className="text-center text-[10px] font-extrabold leading-tight text-ink">{'winner' in c ? r.ganadora.cartaLabel : c.label}</span>
             </div>
           ))}
         </div>
@@ -137,7 +147,7 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
         {phase === 'resultado' && (
           <div ref={resultRef} className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 text-center">
             <CrossedGift size={150} />
-            <p className="text-inflated text-[clamp(34px,10vw,48px)] leading-none">{r.ganadora.label}</p>
+            <p className="res-label text-inflated text-[clamp(34px,10vw,48px)] leading-none">{r.ganadora.cartaLabel}</p>
           </div>
         )}
       </div>

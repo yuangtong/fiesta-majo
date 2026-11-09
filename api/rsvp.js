@@ -11,7 +11,9 @@ export default async function handler(req, res) {
 
   const nombre = String(b.nombre || '').trim().slice(0, 100);
   const email = String(b.email || '').trim().toLowerCase();
-  const cancion = String(b.cancion || '').trim().slice(0, 200);
+  // Hasta 5 canciones; se guardan una por línea en la columna "cancion".
+  const lista = Array.isArray(b.canciones) ? b.canciones : [b.cancion];
+  const cancion = lista.map((c) => String(c || '').trim().slice(0, 200)).filter(Boolean).slice(0, 5).join('\n');
 
   if (nombre.length < 2 || !isEmail(email)) {
     return res.status(400).json({ error: 'Datos inválidos' });

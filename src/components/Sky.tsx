@@ -40,7 +40,7 @@ export function Sky() {
       const tween = gsap.to(el, {
         x: gsap.utils.random(-width * 0.35, window.innerWidth - width * 0.65),
         y: gsap.utils.random(-height * 0.3, window.innerHeight - height * 0.7),
-        duration: gsap.utils.random(18, 34),
+        duration: gsap.utils.random(45, 80),
         ease: 'sine.inOut',
         onComplete: () => wander(el),
       });
@@ -55,7 +55,7 @@ export function Sky() {
         if (!reduced) {
           gsap.from(el.firstElementChild, { scale: 0, duration: 1, delay: i * 0.06, ease: 'elastic.out(1, 0.5)' });
           // balanceo suave, aparte del paseo
-          gsap.to(el.firstElementChild, { rotation: i % 2 ? 3 : -3, y: i % 2 ? 6 : -6, duration: 2.6 + (i % 3) * 0.8, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+          gsap.to(el.firstElementChild, { rotation: i % 2 ? 3 : -3, y: i % 2 ? 6 : -6, duration: 4.5 + (i % 3) * 1.4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
           gsap.delayedCall(gsap.utils.random(0, 2.5), () => wander(el));
         }
       });

@@ -17,7 +17,7 @@ import { InfoScreen } from './screens/InfoScreen';
 import AdminScreen from './pages/AdminScreen';
 
 // Flujo: sobre → "Estás invitado" → Huamanga Club presenta → ruleta → temática → datos → entrada → info.
-const INITIAL: Guest = { nombre: '', apellido: '', email: '', cancion: '', numero: null };
+const INITIAL: Guest = { nombre: '', apellido: '', email: '', canciones: [''], numero: null };
 
 export default function App() {
   return (
