@@ -16,10 +16,11 @@ export function DragBuddy({ img, sizes, className = '', imgClass = '' }: {
   useEffect(() => {
     if (!ref.current) return;
     const [drag] = makeThrowable(ref.current, {
-      bounds: window, // al lanzarlo no se escapa de la pantalla
       onGrab: (el) => { el.style.zIndex = '40'; },
       onRest: (el) => { el.style.zIndex = ''; },
     });
+    // Límite de pantalla solo al agarrarlo (con bounds desde el inicio, Draggable lo movía a la parte visible al cargar)
+    drag.addEventListener('press', () => { drag.applyBounds(window); });
     return () => { drag.kill(); };
   }, []);
 
