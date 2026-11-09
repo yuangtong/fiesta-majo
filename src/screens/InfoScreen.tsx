@@ -1,58 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { Calendar, Copy, Gift, Image, Mail, MapPin, Music, Share2 } from 'lucide-react';
+import { Calendar, Copy, Gift, Mail, MapPin, Music, Share2 } from 'lucide-react';
 import { config } from '../config';
 import { copyLink, downloadICS, mapsUrl, shareWhatsApp } from '../lib/actions';
 import { resendConfirmation } from '../lib/api';
+import { prefersReducedMotion } from '../lib/motion';
 import { Modal } from '../components/Modal';
-import type { Answers } from '../types';
+import { CrossedGift } from '../components/CrossedGift';
+import type { Guest } from '../types';
 
-// Pantalla final con todos los datos y acciones: mapa, playlist, QR, calendario,
-// reenviar email, compartir (con easter egg opcional) y copiar link.
-export function InfoScreen({ answers }: { answers: Answers }) {
-  const ev = config.evento;
+// Pantalla 7: todos los datos de la fiesta y acciones útiles.
+export function InfoScreen({ guest, total }: { guest: Guest; total: number | null }) {
+  const e = config.evento;
   const info = config.info;
-  const contentRef = useRef<HTMLDivElement>(null);
-  const eggAudioRef = useRef<HTMLAudioElement | null>(null);
-  const [modal, setModal] = useState<'qr' | 'gallery' | 'egg' | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const [qr, setQr] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [emailState, setEmailState] = useState<'idle' | 'sending' | 'sent'>('idle');
+  const [emailState, setEmailState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
   useEffect(() => {
-    if (contentRef.current) {
-      gsap.fromTo(contentRef.current.children, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power3.out', delay: 0.1 });
-    }
+    if (!ref.current || prefersReducedMotion()) return;
+    gsap.fromTo(ref.current.children, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, stagger: 0.07, ease: 'power3.out' });
   }, []);
 
-  const handleResendEmail = async () => {
-    if (!answers.email || emailState === 'sending') return;
+  const resend = async () => {
+    if (!guest.email || emailState === 'sending') return;
     setEmailState('sending');
     try {
-      const res = await resendConfirmation(answers.email);
-      if (!res.ok) throw new Error();
-      setEmailState('sent');
-      setTimeout(() => setEmailState('idle'), 4000);
+      const res = await resendConfirmation(guest.email);
+      setEmailState(res.ok ? 'sent' : 'error');
     } catch {
-      setEmailState('idle');
+      setEmailState('error');
     }
   };
 
-  const handleShare = () => {
-    if (!info.easterEgg.activo) return shareWhatsApp();
-    setModal('egg');
-    if (info.easterEgg.audio) {
-      eggAudioRef.current ??= new Audio(info.easterEgg.audio);
-      eggAudioRef.current.currentTime = 0;
-      eggAudioRef.current.play().catch(() => {});
-    }
-  };
-
-  const closeModal = () => {
-    eggAudioRef.current?.pause();
-    setModal(null);
-  };
-
-  const handleCopy = async () => {
+  const copy = async () => {
     await copyLink();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -60,91 +42,68 @@ export function InfoScreen({ answers }: { answers: Answers }) {
 
   return (
     <div className="h-full w-full overflow-y-auto">
-      <div ref={contentRef} className="flex flex-col gap-4 px-5 py-8 pb-24">
-        <div className="text-center">
-          <p className="label">Datos de la fiesta</p>
-          <h1 className="text-2xl font-bold">{ev.nombre}</h1>
-          {answers.nombre && <p className="text-sm text-zinc-500">¡Nos vemos, {answers.nombre}!</p>}
+      <div ref={ref} className="mx-auto flex w-full max-w-[460px] flex-col gap-4 px-5 pb-24 pt-10">
+        <div className="flex flex-col items-start gap-1.5 font-dot font-black uppercase">
+          <span className="bg-white px-2 text-lg text-ink">{e.marca}</span>
+          <span className="bg-ink px-2 text-[clamp(34px,10vw,46px)] leading-none text-white">{e.edicion}</span>
+          <span className="bg-balloon px-2 text-xl text-white">{e.nombre}</span>
         </div>
 
-        <div className="card text-center">
-          <p className="text-3xl font-bold">{ev.fechaCorta}</p>
-          <p className="text-sm text-zinc-600">{ev.fechaLarga}</p>
-        </div>
+        <section className="panel">
+          <p className="font-display text-[34px] leading-none text-balloon">{e.fechaLarga}</p>
+          <p className="mt-1 font-dot text-lg font-black uppercase">{e.hora}</p>
+          {total !== null && total > 0 && <p className="mt-3 text-sm font-semibold text-ink/70">{total} personas ya tienen entrada.</p>}
+        </section>
 
-        <div className="card">
-          <p className="label mb-2 flex items-center gap-1.5"><MapPin size={14} /> Dónde</p>
-          <p className="font-semibold">{ev.direccion}</p>
-          <p className="mb-3 text-xs text-zinc-500">{ev.referencia}</p>
-          <a className="btn block text-center" href={mapsUrl()} target="_blank" rel="noreferrer">Ver en Google Maps</a>
-        </div>
+        <section className="panel">
+          <h3 className="mb-2 flex items-center gap-1.5 text-sm font-extrabold text-ink/60"><MapPin size={16} /> Dónde</h3>
+          <p className="text-xl font-extrabold">{e.direccion}</p>
+          <p className="mb-4 text-sm text-ink/70">{e.referencia}</p>
+          <a className="btn-balloon w-full" href={mapsUrl()} target="_blank" rel="noreferrer">Abrir en Google Maps</a>
+        </section>
 
-        <div className="card">
-          <p className="label mb-2">Reglas</p>
-          <ol className="list-decimal space-y-1.5 pl-5 text-sm">
-            {info.reglas.map((r) => <li key={r}>{r}</li>)}
-          </ol>
-          <p className="mt-3 text-sm"><b>Dress code:</b> {info.dressCode}</p>
-        </div>
-
-        <div className="card">
-          <p className="label mb-2">Vibe</p>
-          <p className="text-sm">{info.vibe.texto}</p>
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {info.vibe.tags.map((t) => <span key={t} className="rounded-full border border-zinc-300 px-2 py-0.5 text-xs">{t}</span>)}
+        <section className="panel flex items-center gap-4">
+          <CrossedGift size={70} />
+          <div>
+            <h3 className="text-sm font-extrabold text-ink/60">Dress code</h3>
+            <p className="font-display text-2xl leading-tight text-balloon">{config.tematica.titulo}</p>
+            <p className="text-sm">{config.tematica.texto}</p>
           </div>
-          {info.galeria.length > 0 && (
-            <button className="btn-outline mt-3 flex items-center justify-center gap-2" onClick={() => setModal('gallery')}>
-              <Image size={16} /> Ver inspiración
+        </section>
+
+        <section className="panel">
+          <h3 className="mb-3 text-sm font-extrabold text-ink/60">Reglas de la casa</h3>
+          <ol className="space-y-2">
+            {info.reglas.map((r, i) => (
+              <li key={r} className="flex gap-3">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-balloon text-sm font-extrabold text-white">{i + 1}</span>
+                <span className="pt-0.5">{r}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <div className="grid grid-cols-2 gap-3">
+          {info.playlist.url && (
+            <a className="btn-ghost" href={info.playlist.url} target="_blank" rel="noreferrer"><Music size={18} /> Playlist</a>
+          )}
+          {info.yape.qrImagen && (
+            <button className="btn-ghost" onClick={() => setQr(true)}><Gift size={18} /> Colaborar</button>
+          )}
+          <button className="btn-ghost" onClick={downloadICS}><Calendar size={18} /> Calendario</button>
+          <button className="btn-ghost" onClick={shareWhatsApp}><Share2 size={18} /> WhatsApp</button>
+          <button className="btn-ghost" onClick={copy}><Copy size={18} /> {copied ? '¡Copiado!' : 'Copiar link'}</button>
+          {guest.email && (
+            <button className="btn-ghost" onClick={resend} disabled={emailState === 'sending'}>
+              <Mail size={18} />
+              {emailState === 'sending' ? 'Enviando…' : emailState === 'sent' ? 'Enviado' : emailState === 'error' ? 'Reintentar' : 'Reenviar email'}
             </button>
           )}
         </div>
-
-        {info.playlist.url && (
-          <a className="btn-outline flex items-center justify-center gap-2" href={info.playlist.url} target="_blank" rel="noreferrer">
-            <Music size={16} /> {info.playlist.nombre}
-          </a>
-        )}
-
-        {info.yape.qrImagen && (
-          <button className="btn-outline flex items-center justify-center gap-2" onClick={() => setModal('qr')}>
-            <Gift size={16} /> {info.yape.texto}
-          </button>
-        )}
-
-        <button className="btn-outline flex items-center justify-center gap-2" onClick={downloadICS}>
-          <Calendar size={16} /> Agregar al calendario
-        </button>
-
-        {answers.email && (
-          <button className="btn-outline flex items-center justify-center gap-2" onClick={handleResendEmail} disabled={emailState === 'sending'}>
-            <Mail size={16} />
-            {emailState === 'sending' ? 'Enviando…' : emailState === 'sent' ? `Enviado a ${answers.email}` : 'Reenviar email de confirmación'}
-          </button>
-        )}
-
-        <button className="btn flex items-center justify-center gap-2" onClick={handleShare}>
-          <Share2 size={16} /> Compartir por WhatsApp
-        </button>
-
-        <button className="btn-outline flex items-center justify-center gap-2" onClick={handleCopy}>
-          <Copy size={16} /> {copied ? '¡Link copiado!' : 'Copiar link'}
-        </button>
       </div>
 
-      <Modal open={modal === 'qr'} onClose={closeModal} title="Colaboraciones">
-        <img src={info.yape.qrImagen} alt="QR" className="w-full rounded-lg" />
-      </Modal>
-
-      <Modal open={modal === 'gallery'} onClose={closeModal} title="Inspiración">
-        <div className="grid max-h-[60vh] grid-cols-2 gap-2 overflow-y-auto">
-          {info.galeria.map((src: string) => <img key={src} src={src} alt="" className="aspect-square w-full rounded-lg object-cover" />)}
-        </div>
-      </Modal>
-
-      <Modal open={modal === 'egg'} onClose={closeModal} title={info.easterEgg.texto}>
-        {info.easterEgg.imagen && <img src={info.easterEgg.imagen} alt="" className="w-full rounded-lg" />}
-        <button className="btn mt-4" onClick={() => { closeModal(); shareWhatsApp(); }}>Ahora sí, compartir</button>
+      <Modal open={qr} onClose={() => setQr(false)} title={info.yape.texto}>
+        <img src={info.yape.qrImagen} alt="Código QR para colaborar" className="w-full rounded-lg" />
       </Modal>
     </div>
   );

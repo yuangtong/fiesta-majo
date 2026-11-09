@@ -119,7 +119,7 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
             ))}
           </div>
         </div>
-        <p className={`text-base font-bold text-white transition-opacity ${phase === 'sobre' ? 'animate-pulse' : 'opacity-0'}`}>
+        <p className={`rounded-full bg-white px-5 py-2.5 text-base font-extrabold text-ink shadow-[0_8px_18px_rgba(10,31,68,0.15)] transition-opacity ${phase === 'sobre' ? 'animate-bounce' : 'opacity-0'}`}>
           {i.cta}
         </p>
       </div>

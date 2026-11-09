@@ -1,172 +1,125 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import confetti from 'canvas-confetti';
+import { ArrowLeft } from 'lucide-react';
 import { config } from '../config';
 import { submitRSVP } from '../lib/api';
-import { VoteBars } from '../components/VoteBars';
-import { SpectrumChart } from '../components/SpectrumChart';
-import type { Answers, SpectrumStats, VoteStats } from '../types';
+import { prefersReducedMotion } from '../lib/motion';
+import { pop, puff } from '../lib/sfx';
+import type { Guest } from '../types';
 
-type Errors = Partial<Record<'nombre' | 'apellido' | 'email' | 'extra' | 'regalo', string>>;
-type Phase = 'form' | 'celebration' | 'results';
+type Step = 0 | 1 | 2;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Pregunta 3: datos reales → valida → guarda en Supabase vía /api/rsvp (rechaza emails repetidos)
-// → el servidor manda el email → celebración con confetti → resultados acumulados → info de la fiesta.
-export function FormScreen({ answers, voteStats, spectrumStats, onSubmitted, onDone }: {
-  answers: Answers;
-  voteStats: VoteStats;
-  spectrumStats: SpectrumStats;
-  onSubmitted: (data: Partial<Answers>) => void;
-  onDone: () => void;
+// Pantalla 5: tus datos, una pregunta por pantalla (nombre → email → canción). Al final genera la entrada.
+export function FormScreen({ guest, onChange, onDone }: {
+  guest: Guest;
+  onChange: (data: Partial<Guest>) => void;
+  onDone: (numero: number | null) => void;
 }) {
   const f = config.formulario;
-  const [nombre, setNombre] = useState(answers.nombre);
-  const [apellido, setApellido] = useState(answers.apellido);
-  const [email, setEmail] = useState(answers.email);
-  const [extra, setExtra] = useState(answers.extra);
-  const [regalo, setRegalo] = useState(answers.regalo);
-  const [errors, setErrors] = useState<Errors>({});
-  const [phase, setPhase] = useState<Phase>('form');
-  const [submitting, setSubmitting] = useState(false);
-  const celebrationRef = useRef<HTMLDivElement>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
+  const [step, setStep] = useState<Step>(0);
+  const [error, setError] = useState('');
+  const [sending, setSending] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const firstInput = useRef<HTMLInputElement>(null);
 
-  const validate = () => {
-    const e: Errors = {};
-    if (nombre.trim().length < 2) e.nombre = 'Mínimo 2 caracteres';
-    if (apellido.trim().length < 2) e.apellido = 'Mínimo 2 caracteres';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = 'Email inválido';
-    if (!extra) e.extra = 'Elige una opción';
-    if (!regalo) e.regalo = 'Es obligatorio';
-    setErrors(e);
-    return Object.keys(e).length === 0;
+  useEffect(() => {
+    firstInput.current?.focus({ preventScroll: true });
+    if (!panelRef.current || prefersReducedMotion()) return;
+    gsap.fromTo(panelRef.current, { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'power3.out' });
+  }, [step]);
+
+  const shake = () => {
+    if (!panelRef.current || prefersReducedMotion()) return;
+    gsap.fromTo(panelRef.current, { x: -10 }, { x: 0, duration: 0.5, ease: 'elastic.out(1.5, 0.3)' });
   };
 
-  const handleSubmit = async (ev: React.FormEvent) => {
+  const validate = (): string => {
+    if (step === 0) {
+      if (guest.nombre.trim().length < 2) return 'Escribe tu nombre (mínimo 2 letras).';
+      if (guest.apellido.trim().length < 2) return 'Escribe tu apellido (mínimo 2 letras).';
+    }
+    if (step === 1 && !EMAIL_RE.test(guest.email.trim())) return 'Ese email no parece válido. Revisa que tenga @ y un dominio.';
+    return '';
+  };
+
+  const next = async (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (submitting || !validate()) return;
-    setSubmitting(true);
+    const msg = validate();
+    if (msg) { setError(msg); shake(); return; }
+    setError('');
+    if (step < 2) { puff(); setStep((step + 1) as Step); return; }
 
-    const data = { nombre, apellido, email: email.trim(), extra, regalo };
-    const result = await submitRSVP({ ...answers, ...data });
-    if (result !== 'ok') {
-      setErrors((p) => ({
-        ...p,
-        email: result === 'duplicate'
-          ? 'Este email ya está registrado. ¿Ya confirmaste antes?'
-          : 'No se pudo enviar. Revisa tu conexión e intenta otra vez.',
-      }));
-      setSubmitting(false);
-      return;
+    setSending(true);
+    const result = await submitRSVP(guest);
+    setSending(false);
+    if (result.status === 'ok') { pop(); onDone(result.numero); return; }
+    if (result.status === 'duplicate') {
+      setStep(1);
+      setError('Ese email ya tiene entrada. Si fuiste tú, revisa tu bandeja (y spam).');
+    } else {
+      setError('No se pudo generar la entrada. Revisa tu conexión e inténtalo otra vez.');
     }
-    onSubmitted(data);
-    setSubmitting(false);
-    setPhase('celebration');
+    shake();
   };
 
-  useEffect(() => {
-    if (phase !== 'celebration') return;
-    const end = Date.now() + 2000;
-    const frame = () => {
-      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 0.7 }, disableForReducedMotion: true });
-      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, disableForReducedMotion: true });
-      if (Date.now() < end) requestAnimationFrame(frame);
-    };
-    frame();
-    gsap.fromTo(celebrationRef.current, { scale: 0, opacity: 0 }, {
-      scale: 1, opacity: 1, duration: 1.2, ease: 'elastic.out(1, 0.5)',
-      onComplete: () => { setTimeout(() => setPhase('results'), 800); },
-    });
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase === 'results' && resultsRef.current) {
-      gsap.fromTo(resultsRef.current.children, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.2, ease: 'power3.out' });
-    }
-  }, [phase]);
-
-  if (phase === 'celebration') {
-    return (
-      <div className="screen items-center justify-center">
-        <div ref={celebrationRef} className="text-center" style={{ opacity: 0 }}>
-          <h1 className="text-4xl font-bold">{f.celebracion.titulo}</h1>
-          <p className="mt-3 text-zinc-500">{f.celebracion.subtitulo}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (phase === 'results') {
-    return (
-      <div className="screen">
-        <div ref={resultsRef} className="flex flex-col gap-4">
-          <div className="text-center">
-            <p className="label">Resultados acumulados</p>
-            <p className="text-sm text-zinc-500">{voteStats.total} invitados han confirmado</p>
-          </div>
-          <div className="card">
-            <p className="label mb-1">{config.pregunta1.titulo}</p>
-            <p className="mb-3 text-xs italic text-zinc-400">{config.pregunta1.disclaimer}</p>
-            <VoteBars stats={voteStats} highlight={answers.voto} />
-          </div>
-          <div className="card">
-            <p className="label mb-2">{config.pregunta2.titulo}</p>
-            <SpectrumChart stats={spectrumStats} userValue={answers.espectro} />
-          </div>
-          <button className="btn" onClick={onDone}>Ver datos de la fiesta</button>
-        </div>
-      </div>
-    );
-  }
+  const back = () => { setError(''); setStep((s) => Math.max(0, s - 1) as Step); };
+  const titleId = `paso-${step}`;
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="screen justify-center gap-4">
-      <div>
-        <p className="label">{f.etiqueta}</p>
-        <p className="text-sm text-zinc-500">{f.subtitulo}</p>
-      </div>
-
-      <Field label="Nombre" error={errors.nombre}>
-        <input className="input" value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="given-name" />
-      </Field>
-      <Field label="Apellido" error={errors.apellido}>
-        <input className="input" value={apellido} onChange={(e) => setApellido(e.target.value)} autoComplete="family-name" />
-      </Field>
-      <Field label="Email" error={errors.email}>
-        <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
-      </Field>
-
-      <Field label={f.preguntaExtra.titulo} error={errors.extra}>
-        <div className="flex flex-col gap-2">
-          {f.preguntaExtra.opciones.map((o) => (
-            <label key={o.value} className={`flex items-center gap-3 rounded-lg border bg-white px-3 py-2.5 ${extra === o.value ? 'border-zinc-900' : 'border-zinc-300'}`}>
-              <input type="radio" name="extra" value={o.value} checked={extra === o.value} onChange={() => setExtra(o.value)} />
-              <span className="text-sm">{o.label}</span>
-            </label>
+    <form onSubmit={next} noValidate className="screen justify-center gap-6">
+      {/* Progreso: 3 globos que se inflan */}
+      <div className="flex w-full max-w-[420px] items-center gap-3" aria-label={`Paso ${step + 1} de 3`}>
+        {step > 0 && (
+          <button type="button" onClick={back} aria-label="Volver" className="grid h-11 w-11 place-items-center rounded-full bg-white/85 text-ink">
+            <ArrowLeft size={20} />
+          </button>
+        )}
+        <div className="flex gap-2" aria-hidden>
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="block rounded-full transition-all duration-500"
+              style={{
+                width: i === step ? 34 : 14, height: 14,
+                background: i <= step ? 'radial-gradient(120% 140% at 30% 25%, #ff8fa3, #ff4d6d 50%, #d9264a)' : 'rgb(255 255 255 / .6)',
+              }}
+            />
           ))}
         </div>
-      </Field>
+      </div>
 
-      <Field error={errors.regalo}>
-        <label className="flex items-center gap-3 text-sm">
-          <input type="checkbox" checked={regalo} onChange={(e) => setRegalo(e.target.checked)} />
-          {f.checkbox}
-        </label>
-      </Field>
+      <div ref={panelRef} className="flex w-full max-w-[420px] flex-col gap-4">
+        <h2 id={titleId} className="text-inflated text-[clamp(38px,11vw,54px)] leading-[0.95]">{f.pasos[step].titulo}</h2>
 
-      <button type="submit" className="btn" disabled={submitting}>
-        {submitting ? 'Enviando…' : 'Confirmar asistencia'}
+        {step === 0 && (
+          <>
+            <input ref={firstInput} className="field" placeholder="Nombre" autoComplete="given-name" aria-labelledby={titleId}
+              value={guest.nombre} onChange={(e) => onChange({ nombre: e.target.value })} />
+            <input className="field" placeholder="Apellido" autoComplete="family-name" aria-label="Apellido"
+              value={guest.apellido} onChange={(e) => onChange({ apellido: e.target.value })} />
+          </>
+        )}
+        {step === 1 && (
+          <input ref={firstInput} className="field" type="email" inputMode="email" placeholder="tu@email.com" autoComplete="email"
+            aria-labelledby={titleId} value={guest.email} onChange={(e) => onChange({ email: e.target.value })} />
+        )}
+        {step === 2 && (
+          <>
+            <input ref={firstInput} className="field" placeholder="Artista – canción" aria-labelledby={titleId} maxLength={200}
+              value={guest.cancion} onChange={(e) => onChange({ cancion: e.target.value })} />
+            <p className="text-sm font-semibold text-white drop-shadow">Opcional. Con esto armamos la playlist de la noche.</p>
+          </>
+        )}
+
+        <p role="alert" className="min-h-[1.5rem] rounded-xl text-sm font-bold text-ink">
+          {error && <span className="inline-block rounded-xl bg-white px-3 py-2">{error}</span>}
+        </p>
+      </div>
+
+      <button type="submit" className="btn-balloon w-full max-w-[420px]" disabled={sending}>
+        {sending ? 'Generando tu entrada…' : step < 2 ? 'Siguiente' : f.enviar}
       </button>
     </form>
-  );
-}
-
-function Field({ label, error, children }: { label?: string; error?: string; children: React.ReactNode }) {
-  return (
-    <div>
-      {label && <p className="label mb-1.5">{label}</p>}
-      {children}
-      {error && <p className="error">{error}</p>}
-    </div>
   );
 }

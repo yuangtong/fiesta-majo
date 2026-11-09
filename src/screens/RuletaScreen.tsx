@@ -115,7 +115,7 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
         {/* Puntero */}
         <div aria-hidden className="absolute left-1/2 top-[-6px] z-20 h-0 w-0 -translate-x-1/2 border-x-[14px] border-t-[22px] border-x-transparent border-t-balloon drop-shadow" />
         <div ref={wheelRef} className="absolute left-1/2 top-1/2 h-0 w-0">
-          {cards.map((c, i) => (
+          {cards.map((c) => (
             <div
               key={c.id}
               className={`rcard absolute left-0 top-0 flex flex-col items-center justify-between rounded-2xl bg-white p-1.5 opacity-0 shadow-[0_8px_18px_rgba(10,31,68,0.18)] ${'winner' in c ? 'is-winner ring-4 ring-balloon' : ''}`}

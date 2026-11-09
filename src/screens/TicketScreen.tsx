@@ -1,0 +1,93 @@
+import { useEffect, useRef, useState } from 'react';
+import { gsap } from 'gsap';
+import confetti from 'canvas-confetti';
+import { Share2 } from 'lucide-react';
+import { config } from '../config';
+import AdmitOneTicket, { TICKET_LAYOUT, TICKET_TEXTURE, playShutterSound } from '../components/ui/admit-one-ticket';
+import { fullName } from '../lib/api';
+import { formatNumero, prefersReducedMotion } from '../lib/motion';
+import { isMuted } from '../lib/sfx';
+import type { Guest } from '../types';
+
+// Paleta globo para el ticket (en vez del naranja original).
+const TEXTURE = {
+  ...TICKET_TEXTURE,
+  colorBack: '#FF4D6D',
+  colorFront: '#FFB3C1',
+  colorHighlight: '#FF8FA3',
+  shape: 'warp' as const,
+  speed: 0.35,
+};
+const LAYOUT = { ...TICKET_LAYOUT, inkColor: '#0A1F44', watermarkColor: '#FFD6DE', watermarkOpacity: 0.7 };
+
+// Pantalla 6: la entrada generada con el nombre del invitado y su número.
+export function TicketScreen({ guest, onNext }: { guest: Guest; onNext: () => void }) {
+  const e = config.evento;
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(340);
+  const [shared, setShared] = useState(false);
+  const numero = formatNumero(guest.numero);
+
+  useEffect(() => {
+    const update = () => setWidth(Math.min(window.innerWidth - 32, 560));
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  useEffect(() => {
+    if (!isMuted()) playShutterSound({ volume: 0.4 });
+    confetti({ particleCount: 70, spread: 90, origin: { y: 0.35 }, colors: ['#FF4D6D', '#FFFFFF', '#4BB1F8', '#FFD43B'], disableForReducedMotion: true });
+    if (!ref.current || prefersReducedMotion()) return;
+    // La entrada sale "impresa" de arriba hacia abajo
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.ticket-wrap', { clipPath: 'inset(0 0 100% 0)', y: -30 }, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: 1.1, ease: 'power3.out', delay: 0.15 });
+      gsap.fromTo('.after', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', stagger: 0.08, delay: 1 });
+    }, ref);
+    return () => ctx.revert();
+  }, []);
+
+  const share = async () => {
+    const text = `Tengo mi entrada ${numero} para ${e.marca} · ${e.edicion}. ¿Tú?`;
+    const url = window.location.origin;
+    try {
+      if (navigator.share) await navigator.share({ title: `${e.marca} · ${e.edicion}`, text, url });
+      else { await navigator.clipboard.writeText(`${text} ${url}`); setShared(true); }
+    } catch { /* el usuario canceló */ }
+  };
+
+  return (
+    <div ref={ref} className="screen justify-center gap-5">
+      <h2 className="text-inflated text-center text-[clamp(44px,13vw,64px)] leading-none">{config.ticket.titulo}</h2>
+
+      <div className="ticket-wrap drop-shadow-[0_18px_30px_rgba(10,31,68,0.28)]">
+        <AdmitOneTicket
+          width={width}
+          name={fullName(guest)}
+          presenter={`${e.marca} presenta`}
+          event={`${e.edicion} · ${e.nombre}`}
+          venue={e.direccion}
+          dates={e.fechaCorta}
+          stubText={numero || config.ticket.stub}
+          watermark={e.edicionCorta}
+          texture={TEXTURE}
+          layout={LAYOUT}
+        />
+      </div>
+
+      <p className="after max-w-[420px] text-center text-base font-extrabold text-white drop-shadow">
+        {config.ticket.dressCode}
+      </p>
+      <p className="after max-w-[420px] text-center text-sm font-semibold text-white/90">
+        También te la mandamos a <span className="font-extrabold">{guest.email}</span>.
+      </p>
+
+      <div className="after flex flex-wrap justify-center gap-3">
+        <button className="btn-ghost" onClick={share}>
+          <Share2 size={18} /> {shared ? 'Link copiado' : 'Compartir'}
+        </button>
+        <button className="btn-balloon" onClick={onNext}>Ver datos de la fiesta</button>
+      </div>
+    </div>
+  );
+}

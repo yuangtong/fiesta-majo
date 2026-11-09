@@ -8,6 +8,8 @@ import { Floaties } from '../components/Floaties';
 import { prefersReducedMotion } from '../lib/motion';
 import { squeak } from '../lib/sfx';
 
+const TITLE_SCALE = 2.4;
+
 // Pantalla 2: "Huamanga Club presenta: Edición 0". Letras globo 3D (Spline) + cartel de club.
 export function ClubScreen({ onNext }: { onNext: () => void }) {
   const e = config.evento;
@@ -25,6 +27,9 @@ export function ClubScreen({ onNext }: { onNext: () => void }) {
 
   // Las letras 3D entran una por una (si la escena cargó)
   const onReady = (app: Application) => {
+    // La escena viene encuadrada con mucho aire: agrandamos el título para que llene el ancho del celular.
+    const group = app.findObjectByName('titulo-club');
+    if (group) { group.scale.x *= TITLE_SCALE; group.scale.y *= TITLE_SCALE; group.scale.z *= TITLE_SCALE; }
     if (prefersReducedMotion()) return;
     const letters = app.getAllObjects().filter((o) => o.name.startsWith('club-'));
     letters.forEach((o, i) => {
@@ -41,7 +46,7 @@ export function ClubScreen({ onNext }: { onNext: () => void }) {
   return (
     <div className="screen gap-4">
       <Floaties items={[
-        { img: 'nature-star', x: '4%', y: '6%', size: 64, rot: -12 },
+        { img: 'nature-star', x: '3%', y: '30%', size: 56, rot: -12 },
         { img: 'shapes-hearts', x: '76%', y: '30%', size: 70, rot: 10 },
         { img: 'nature-comet', x: '78%', y: '80%', size: 80 },
       ]} />
