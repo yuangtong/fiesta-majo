@@ -4,7 +4,8 @@ import { Calendar, Copy, Gift, Mail, MapPin, Music } from 'lucide-react';
 import { config } from '../config';
 import { copyLink, downloadICS, mapsUrl } from '../lib/actions';
 import { resendConfirmation } from '../lib/api';
-import { prefersReducedMotion, toyImg } from '../lib/motion';
+import { prefersReducedMotion } from '../lib/motion';
+import { DragBuddy } from '../components/DragBuddy';
 import { Modal } from '../components/Modal';
 import { CrossedGift } from '../components/CrossedGift';
 import type { Guest } from '../types';
@@ -21,7 +22,7 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
 
   useEffect(() => {
     if (!ref.current || prefersReducedMotion()) return;
-    gsap.fromTo(ref.current.children, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, stagger: 0.07, ease: 'power3.out' });
+    gsap.fromTo(ref.current.children, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, stagger: 0.07, ease: 'power3.out', clearProps: 'transform' });
   }, []);
 
   const resend = async () => {
@@ -78,8 +79,8 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
         </section>
 
         <section className="panel relative">
-          <img {...toyImg('globos/alien', '110px')} alt="" draggable={false}
-            className="anim-bob pointer-events-none absolute -right-3 -top-16 w-[96px] drop-shadow-[0_10px_14px_rgba(10,31,68,0.22)]" />
+          <DragBuddy img="globos/alien" sizes="110px" className="-right-3 -top-16 z-10 w-[96px]"
+            imgClass="drop-shadow-[0_10px_14px_rgba(10,31,68,0.22)]" />
           <h3 className="mb-3 text-sm font-extrabold text-ink/60">Reglas de la casa</h3>
           <ol className="space-y-2">
             {info.reglas.map((r, i) => (
