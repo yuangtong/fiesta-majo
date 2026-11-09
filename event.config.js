@@ -36,8 +36,8 @@ export default {
     invitado: '/images/titulos/estas-invitado.webp',
     // En computadora el título va en 2 líneas como la referencia: "HUAMANGA" y "CLUB" por separado.
     // Vacío = se usa el título de 3 líneas (club).
-    palabraHuamanga: '', // ej. '/images/titulos/huamanga.webp'
-    palabraClub: '', // ej. '/images/titulos/club.webp'
+    palabraHuamanga: '/images/titulos/huamanga.webp',
+    palabraClub: '/images/titulos/club.webp',
     // Composición de referencia (solo guía visual; la escena se arma por capas en ClubHero).
     clubEscena: '/images/titulos/huamanga-club-vol0.webp',
     vol: '/images/titulos/vol0.webp', // "VOL 0" en globos negros (versión vertical)
@@ -128,8 +128,8 @@ export default {
   info: {
     reglas: [
       'Vístete para la ocasión incorrecta (ver arriba).',
-      'TODO Regla 2',
-      'TODO Regla 3',
+      'Solo se permite fumar afuera, y no pisar el pasto.',
+      'Si alguien ensucia el piso, tiene que avisar de inmediato y limpiarlo.',
     ],
     playlist: { nombre: 'Playlist de la noche', url: '' }, // TODO
     yape: { texto: '¿Quieres colaborar?', qrImagen: '' }, // TODO

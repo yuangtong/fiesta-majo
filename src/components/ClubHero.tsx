@@ -22,7 +22,7 @@ interface Layer {
   flip?: boolean;
 }
 
-const ORANGE = 'hue-rotate(38deg) saturate(1.25)';
+// Flor naranja: usar la imagen de Gemini cuando llegue (con filtro el centro sale verde).
 const PURPLE = 'hue-rotate(-55deg) saturate(0.9)';
 
 /** Horizontal (computadora): mismo orden que la imagen de referencia. */
@@ -35,14 +35,14 @@ const WIDE: Layer[] = [
   { img: 'shapes-hearts', x: 27, y: 8, w: 6, rot: 8, depth: 1.3 },
   { img: 'shapes-hearts', x: 76, y: 10, w: 6, rot: -12, depth: 1.3, tint: PURPLE },
   { img: 'nature-butterfly', x: 83, y: -1, w: 16, rot: 8, depth: 1.6 },
-  { img: 'globos/flor', x: 91, y: 28, w: 10, rot: 20, depth: 1.5, tint: ORANGE },
+  { img: 'globos/flor', x: 91, y: 28, w: 10, rot: 20, depth: 1.5 },
   { img: 'shapes-hearts', x: 0, y: 36, w: 6, rot: -6, depth: 1.3, tint: PURPLE },
   { img: 'globos/perrito', x: -1, y: 52, w: 19, depth: 1.8 },
-  { img: 'globos/flor', x: 17, y: 66, w: 10, rot: -14, depth: 1.5, tint: ORANGE },
+  { img: 'globos/flor', x: 14, y: 76, w: 10, rot: -14, depth: 1.5 },
   { img: 'shapes-hearts', x: 28, y: 78, w: 7, rot: 10, depth: 1.3 },
-  { img: 'globos/cerdito', x: 66, y: 66, w: 8, rot: 4, depth: 1.6 },
+  { img: 'globos/cerdito', x: 26, y: 68, w: 7, rot: -4, depth: 1.6 },
   { img: 'shapes-hearts', x: 90, y: 64, w: 6, rot: 14, depth: 1.3, tint: PURPLE },
-  { img: 'globos/flor', x: 80, y: 74, w: 15, rot: 8, depth: 1.8 },
+  { img: 'globos/flor', x: 85, y: 80, w: 13, rot: 8, depth: 1.8 },
 ];
 
 /** Vertical (celular): la misma idea apilada. */
@@ -55,7 +55,7 @@ const TALL: Layer[] = [
   { img: 'shapes-hearts', x: 80, y: 46, w: 18, rot: 14, depth: 1.2, tint: PURPLE },
   { img: 'globos/perrito', x: -6, y: 63, w: 50, depth: 1.8 },
   { img: 'globos/cerdito', x: 66, y: 72, w: 28, rot: 4, depth: 1.7 },
-  { img: 'globos/flor', x: 34, y: 84, w: 26, rot: 18, depth: 1.5, tint: ORANGE },
+  { img: 'globos/flor', x: 34, y: 84, w: 26, rot: 18, depth: 1.5 },
 ];
 
 const useWide = () => {
@@ -154,21 +154,21 @@ export function ClubHero({ onScrollHint }: { onScrollHint: () => void }) {
         <div className="camera absolute inset-0 origin-[50%_46%]">
           {layers.map((l, i) => (
             <div key={i} data-depth={l.depth} aria-hidden className="htoy absolute cursor-grab touch-none select-none"
-              style={{ left: `${l.x}%`, top: `${l.y}%`, width: `${l.w}%`, zIndex: Math.round(l.depth * 10) }}>
+              style={{ left: `${l.x}%`, top: `${l.y}%`, width: `${l.w}%`, zIndex: Math.round(l.depth * 10), filter: l.tint }}>
               <img
                 src={l.img.includes('/') ? (l.img.startsWith('fondo/') ? `/images/${l.img}.webp` : plasticine(l.img)) : plasticine(l.img)}
                 alt="" draggable={false}
                 className="w-full drop-shadow-[0_16px_22px_rgba(10,31,68,0.2)]"
-                style={{ transform: `rotate(${l.rot ?? 0}deg) scaleX(${l.flip ? -1 : 1})`, filter: l.tint }}
+                style={{ transform: `rotate(${l.rot ?? 0}deg) scaleX(${l.flip ? -1 : 1})` }}
               />
             </div>
           ))}
 
           {/* Título */}
           {twoWords ? (
-            <div className="absolute inset-x-0 top-[24%] z-[15] flex flex-col items-center">
-              <img src={t.palabraHuamanga} alt="Huamanga" draggable={false} className="hword hdrag w-[78%] cursor-grab touch-none drop-shadow-[0_24px_30px_rgba(10,31,68,0.28)]" />
-              <div className="relative -mt-[2%] w-[48%]">
+            <div className="absolute inset-x-0 top-[23%] z-[15] flex flex-col items-center">
+              <img src={t.palabraHuamanga} alt="Huamanga" draggable={false} className="hword hdrag w-[64%] cursor-grab touch-none drop-shadow-[0_24px_30px_rgba(10,31,68,0.28)]" />
+              <div className="relative -mt-[1%] w-[38%]">
                 <img src={t.palabraClub} alt="Club" draggable={false} className="hword hdrag w-full cursor-grab touch-none drop-shadow-[0_24px_30px_rgba(10,31,68,0.28)]" />
                 <div className="vol hdrag absolute bottom-[8%] left-[102%] w-[42%] origin-left cursor-grab touch-none">{volImg}</div>
               </div>
