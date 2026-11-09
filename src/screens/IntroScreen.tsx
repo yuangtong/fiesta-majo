@@ -95,16 +95,17 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
     return (
       <div ref={titleRef} className="screen screen-center gap-6 text-center">
         <Floaties wander items={[
-          { img: 'globos/flor', x: '-8%', y: '4%', size: 118, rot: -10 },
-          { img: 'shapes-zigzag', x: '36%', y: '-1%', size: 86, rot: 8 },
-          { img: 'shapes-crown', x: '74%', y: '3%', size: 96, rot: 12 },
-          { img: 'shapes-hearts', x: '-6%', y: '34%', size: 88, rot: -8 },
-          { img: 'lifestyle-glasses', x: '80%', y: '28%', size: 86, rot: 14 },
-          { img: 'lifestyle-trumpet', x: '-8%', y: '58%', size: 104, rot: -12 },
-          { img: 'nature-comet', x: '80%', y: '52%', size: 92 },
-          { img: 'globos/cerdito', x: '4%', y: '78%', size: 92, rot: 6 },
-          { img: 'lifestyle-gift', x: '42%', y: '86%', size: 80, rot: -6 },
-          { img: 'globos/perrito', x: '70%', y: '76%', size: 124, rot: -6 },
+          { img: 'globos/globo-rosa', x: '4%', y: '1%', size: 78, rot: -8 },
+          { img: 'globos/flor', x: '30%', y: '-3%', size: 84, rot: -10 },
+          { img: 'shapes-crown', x: '62%', y: '0%', size: 80, rot: 12 },
+          { img: 'globos/globo-amarillo', x: '82%', y: '6%', size: 72, rot: 8 },
+          { img: 'globos/globo-azul', x: '-5%', y: '36%', size: 70, rot: -6 },
+          { img: 'globos/globo-plata', x: '84%', y: '36%', size: 80, rot: 6 },
+          { img: 'shapes-hearts', x: '-6%', y: '62%', size: 80, rot: -8 },
+          { img: 'lifestyle-glasses', x: '82%', y: '62%', size: 78, rot: 14 },
+          { img: 'globos/cerdito', x: '2%', y: '80%', size: 86, rot: 6 },
+          { img: 'lifestyle-trumpet', x: '34%', y: '86%', size: 84, rot: -12 },
+          { img: 'globos/perrito', x: '66%', y: '80%', size: 118, rot: -6 },
         ]} />
         {config.titulos.invitado ? (
           <BalloonTitle
