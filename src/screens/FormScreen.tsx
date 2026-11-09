@@ -16,7 +16,7 @@ export const MAX_CANCIONES = 5;
 export function FormScreen({ guest, onChange, onDone }: {
   guest: Guest;
   onChange: (data: Partial<Guest>) => void;
-  onDone: (numero: number | null, yaExistia?: boolean) => void;
+  onDone: (numero: number | null, yaExistia?: { agregadas: number }) => void;
 }) {
   const f = config.formulario;
   const [step, setStep] = useState<Step>(0);
@@ -56,7 +56,7 @@ export function FormScreen({ guest, onChange, onDone }: {
     const result = await submitRSVP(guest);
     setSending(false);
     if (result.status === 'ok') { pop(); onDone(result.numero); return; }
-    if (result.status === 'duplicate' && result.numero) { pop(); onDone(result.numero, true); return; }
+    if (result.status === 'duplicate' && result.numero) { pop(); onDone(result.numero, { agregadas: result.agregadas }); return; }
     if (result.status === 'duplicate') {
       setStep(1);
       setError('Ese email ya tiene entrada.');

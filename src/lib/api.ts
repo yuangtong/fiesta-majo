@@ -13,7 +13,7 @@ export const fullName = (g: Pick<Guest, 'nombre' | 'apellido'>) =>
 
 export type RsvpResult =
   | { status: 'ok'; numero: number | null }
-  | { status: 'duplicate'; numero: number | null; nombre: string | null }
+  | { status: 'duplicate'; numero: number | null; nombre: string | null; agregadas: number }
   | { status: 'error' };
 
 /** Guarda la confirmación y devuelve el N° de entrada (o la entrada que ya existía para ese email). */
@@ -22,7 +22,7 @@ export async function submitRSVP(g: Guest): Promise<RsvpResult> {
     const res = await postJSON('/api/rsvp', { nombre: fullName(g), email: g.email.trim(), canciones: g.canciones.map((c) => c.trim()).filter(Boolean) });
     if (res.status === 409) {
       const d = await res.json().catch(() => ({}));
-      return { status: 'duplicate', numero: d.numero ?? null, nombre: d.nombre ?? null };
+      return { status: 'duplicate', numero: d.numero ?? null, nombre: d.nombre ?? null, agregadas: d.agregadas ?? 0 };
     }
     if (!res.ok) return { status: 'error' };
     const data = await res.json();

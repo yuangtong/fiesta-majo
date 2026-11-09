@@ -34,7 +34,7 @@ function Invitation() {
   const [screen, setScreen] = useState<Screen>('intro');
   const [guest, setGuest] = useState<Guest>(INITIAL);
   const [started, setStarted] = useState(false);
-  const [yaExistia, setYaExistia] = useState(false);
+  const [yaExistia, setYaExistia] = useState<{ agregadas: number } | null>(null);
   const screenRef = useRef<HTMLDivElement>(null);
   const entering = useRef(false);
 
@@ -69,7 +69,7 @@ function Invitation() {
       case 'tematica':
         return <TematicaScreen onNext={() => go('form')} />;
       case 'form':
-        return <FormScreen guest={guest} onChange={update} onDone={(numero, existia) => { update({ numero }); setYaExistia(!!existia); go('ticket'); }} />;
+        return <FormScreen guest={guest} onChange={update} onDone={(numero, existia) => { update({ numero }); setYaExistia(existia ?? null); go('ticket'); }} />;
       case 'ticket':
         return <TicketScreen guest={guest} yaExistia={yaExistia} onNext={() => go('info')} />;
       case 'info':

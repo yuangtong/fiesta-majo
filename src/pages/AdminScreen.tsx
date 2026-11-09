@@ -140,7 +140,11 @@ export default function AdminScreen() {
                 <td className="p-3 font-dot font-black">{formatNumero(r.numero)}</td>
                 <td className="p-3 font-bold">{r.nombre}</td>
                 <td className="p-3">{r.email}</td>
-                <td className="whitespace-pre-line p-3">{r.cancion || '—'}</td>
+                <td className="p-3">
+                  {r.cancion ? (
+                    <ol className="list-decimal space-y-0.5 pl-4">{r.cancion.split('\n').map((c, k) => <li key={k}>{c}</li>)}</ol>
+                  ) : '—'}
+                </td>
                 <td className="whitespace-nowrap p-3">{formatDate(r.submittedAt)}</td>
                 {config.email.activo && (
                   <>

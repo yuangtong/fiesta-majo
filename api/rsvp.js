@@ -2,7 +2,7 @@
 // Si el email ya confirmó, devuelve 409 con su entrada existente (para volver a mostrarla).
 // El email de confirmación está apagado (config.email.activo); el código queda listo para activarlo.
 import { allowMethod, config, isEmail } from './_lib/shared.js';
-import { findByEmail, insertRsvp } from './_lib/db.js';
+import { addCanciones, findByEmail, insertRsvp } from './_lib/db.js';
 import { sendConfirmation } from './_lib/email.js';
 
 export default async function handler(req, res) {
@@ -13,7 +13,8 @@ export default async function handler(req, res) {
   const email = String(b.email || '').trim().toLowerCase();
   // Hasta 5 canciones; se guardan una por línea en la columna "cancion".
   const lista = Array.isArray(b.canciones) ? b.canciones : [b.cancion];
-  const cancion = lista.map((c) => String(c || '').trim().slice(0, 200)).filter(Boolean).slice(0, 5).join('\n');
+  const canciones = lista.map((c) => String(c || '').trim().slice(0, 200)).filter(Boolean).slice(0, 5);
+  const cancion = canciones.join('\n');
 
   if (nombre.length < 2 || !isEmail(email)) {
     return res.status(400).json({ error: 'Datos inválidos' });
@@ -22,8 +23,10 @@ export default async function handler(req, res) {
   try {
     const { duplicate, numero } = await insertRsvp({ nombre, email, cancion: cancion || null });
     if (duplicate) {
+      // Ya tenía entrada: se le muestra de nuevo y se suman sus canciones nuevas (si trae).
       const existing = await findByEmail(email);
-      return res.status(409).json({ error: 'duplicate', numero: existing?.numero ?? null, nombre: existing?.nombre ?? null });
+      const agregadas = existing && canciones.length ? await addCanciones(existing, canciones) : 0;
+      return res.status(409).json({ error: 'duplicate', numero: existing?.numero ?? null, nombre: existing?.nombre ?? null, agregadas });
     }
 
     let emailSent = false;

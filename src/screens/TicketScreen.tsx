@@ -22,7 +22,7 @@ const TEXTURE = {
 const LAYOUT = { ...TICKET_LAYOUT, inkColor: '#0A1F44', watermarkColor: '#FFD6DE', watermarkOpacity: 0.7 };
 
 // Pantalla 6: la entrada generada con el nombre del invitado y su número.
-export function TicketScreen({ guest, yaExistia = false, onNext }: { guest: Guest; yaExistia?: boolean; onNext: () => void }) {
+export function TicketScreen({ guest, yaExistia = null, onNext }: { guest: Guest; yaExistia?: { agregadas: number } | null; onNext: () => void }) {
   const e = config.evento;
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(340);
@@ -67,7 +67,12 @@ export function TicketScreen({ guest, yaExistia = false, onNext }: { guest: Gues
         { img: 'globos/perrito', x: '-10%', y: '87%', size: 104 },
       ]} />
       <h2 className="text-inflated text-center text-[clamp(44px,13vw,64px)] leading-none md:text-[88px]">{config.ticket.titulo}</h2>
-      {yaExistia && <p className="-mt-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-ink">Ya tenías entrada con ese email. Aquí está otra vez.</p>}
+      {yaExistia && (
+        <p className="-mt-2 max-w-[420px] rounded-[20px] bg-white px-4 py-2 text-center text-sm font-bold text-ink">
+          Ya tenías entrada con ese email. Aquí está otra vez.
+          {yaExistia.agregadas > 0 && ` Sumamos ${yaExistia.agregadas} ${yaExistia.agregadas === 1 ? 'canción nueva' : 'canciones nuevas'} a tu lista.`}
+        </p>
+      )}
 
       <div className="ticket-wrap drop-shadow-[0_18px_30px_rgba(10,31,68,0.28)]">
         <AdmitOneTicket

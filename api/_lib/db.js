@@ -21,10 +21,29 @@ export async function listRsvps(columns = '*') {
 export async function findByEmail(email) {
   const { url, headers } = base();
   const q = encodeURIComponent(email.trim());
-  const res = await fetch(`${url}?select=id,nombre,email,numero&email=ilike.${q}&limit=1`, { headers });
+  const res = await fetch(`${url}?select=id,nombre,email,numero,cancion&email=ilike.${q}&limit=1`, { headers });
   if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
   const rows = await res.json();
   return rows[0] || null;
+}
+
+// Suma canciones nuevas a la entrada existente de ese email (sin repetir, máx. MAX_TOTAL). Devuelve cuántas se sumaron.
+const MAX_TOTAL = 15;
+export async function addCanciones(existing, nuevas) {
+  const actuales = (existing.cancion || '').split('\n').filter(Boolean);
+  const vistas = new Set(actuales.map((c) => c.toLowerCase()));
+  const agregar = nuevas.filter((c) => !vistas.has(c.toLowerCase()) && vistas.add(c.toLowerCase()));
+  const lista = [...actuales, ...agregar].slice(0, MAX_TOTAL);
+  const agregadas = lista.length - actuales.length;
+  if (agregadas <= 0) return 0;
+  const { url, headers } = base();
+  const res = await fetch(`${url}?id=eq.${existing.id}`, {
+    method: 'PATCH',
+    headers: { ...headers, Prefer: 'return=minimal' },
+    body: JSON.stringify({ cancion: lista.join('\n') }),
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  return agregadas;
 }
 
 // Devuelve { duplicate: true } si el email ya existe (índice único en lower(email)),
