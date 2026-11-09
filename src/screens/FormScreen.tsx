@@ -71,8 +71,9 @@ export function FormScreen({ guest, onChange, onDone }: {
   return (
     <form onSubmit={next} noValidate className="screen justify-center gap-6">
       <Floaties items={[
-        { img: 'nature-comet', x: '72%', y: '4%', size: 110 },
-        { img: 'shapes-hearts', x: '-6%', y: '84%', size: 110, rot: -8 },
+        { img: 'lifestyle-trumpet', x: '70%', y: '4%', size: 120, rot: -8 },
+        { img: 'nature-cat', x: '-6%', y: '82%', size: 110, rot: -8 },
+        { img: 'shapes-cube', x: '80%', y: '80%', size: 80, rot: 12 },
       ]} />
       {/* Progreso: 3 globos que se inflan */}
       <div className="flex w-full max-w-[420px] items-center gap-3" aria-label={`Paso ${step + 1} de 3`}>

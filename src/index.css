@@ -56,6 +56,14 @@ body {
       0 10px 18px rgb(217 38 74 / .45);
   }
 
+  /* Letras de globo negro brillante (como "Vol 0." de la composición) */
+  .text-balloon-black {
+    background: linear-gradient(180deg, #8a8a8a 0%, #2a2a2a 30%, #050505 70%, #3a3a3a 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 0 rgb(255 255 255 / .6)) drop-shadow(0 8px 10px rgb(10 31 68 / .35));
+    line-height: 1;
+  }
+
   /* Texto blanco legible aunque pase una nube blanca por detrás */
   .text-legible { color: #fff; text-shadow: 0 1px 2px rgb(10 31 68 / .55), 0 2px 12px rgb(10 31 68 / .45); }
 

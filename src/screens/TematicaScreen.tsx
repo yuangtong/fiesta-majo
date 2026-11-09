@@ -43,8 +43,9 @@ export function TematicaScreen({ onNext }: { onNext: () => void }) {
   return (
     <div ref={ref} className="screen gap-6 md:justify-center md:text-center">
       <Floaties items={[
-        { img: 'shapes-star', x: '74%', y: '2%', size: 104, rot: 12 },
+        { img: 'nature-fish', x: '74%', y: '2%', size: 104, rot: 12 },
         { img: 'nature-sun', x: '-8%', y: '84%', size: 120 },
+        { img: 'globos/flor', x: '78%', y: '86%', size: 100, rot: -12 },
       ]} />
       <div className="lead flex w-full max-w-[420px] items-end gap-3 md:max-w-[640px] md:justify-center">
         <CrossedGift size={92} />

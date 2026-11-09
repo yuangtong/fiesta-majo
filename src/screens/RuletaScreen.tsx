@@ -108,9 +108,10 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
   return (
     <div className="screen gap-4 md:justify-center">
       <Floaties items={[
-        { img: 'shapes-hearts', x: '-5%', y: '3%', size: 96, rot: -10 },
+        { img: 'shapes-crown', x: '-5%', y: '3%', size: 96, rot: -10 },
         { img: 'nature-rainbow', x: '70%', y: '84%', size: 130 },
-        { img: 'shapes-zigzag', x: '-6%', y: '86%', size: 110, rot: 8 },
+        { img: 'globos/perrito', x: '-8%', y: '82%', size: 120, rot: 8 },
+        { img: 'lifestyle-glasses', x: '74%', y: '4%', size: 96, rot: 14 },
       ]} />
       <div className="text-center">
         <p className="font-dot text-lg font-black uppercase text-legible">{r.subtitulo}</p>

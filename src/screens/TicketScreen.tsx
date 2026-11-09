@@ -42,7 +42,10 @@ export function TicketScreen({ guest, yaExistia = false, onNext }: { guest: Gues
     if (!ref.current || prefersReducedMotion()) return;
     // La entrada sale "impresa" de arriba hacia abajo
     const ctx = gsap.context(() => {
-      gsap.fromTo('.ticket-wrap', { clipPath: 'inset(0 0 100% 0)', y: -30 }, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: 1.1, ease: 'power3.out', delay: 0.15 });
+      // (al terminar se quita la máscara: si no, recorta el ticket cuando se inclina con el cursor)
+      gsap.fromTo('.ticket-wrap', { clipPath: 'inset(-10% -10% 110% -10%)', y: -30 }, {
+        clipPath: 'inset(-10% -10% -10% -10%)', y: 0, duration: 1.1, ease: 'power3.out', delay: 0.15, clearProps: 'clipPath',
+      });
       gsap.fromTo('.after', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', stagger: 0.08, delay: 1 });
     }, ref);
     return () => ctx.revert();
@@ -60,8 +63,8 @@ export function TicketScreen({ guest, yaExistia = false, onNext }: { guest: Gues
   return (
     <div ref={ref} className="screen justify-center gap-5">
       <Floaties items={[
-        { img: 'nature-star', x: '-3%', y: '3%', size: 100, rot: -10 },
-        { img: 'shapes-yellow-flower', x: '72%', y: '86%', size: 110 },
+        { img: 'nature-mushrooms', x: '76%', y: '88%', size: 96 },
+        { img: 'globos/perrito', x: '-10%', y: '87%', size: 104 },
       ]} />
       <h2 className="text-inflated text-center text-[clamp(44px,13vw,64px)] leading-none md:text-[88px]">{config.ticket.titulo}</h2>
       {yaExistia && <p className="-mt-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-ink">Ya tenías entrada con ese email. Aquí está otra vez.</p>}

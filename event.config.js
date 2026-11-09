@@ -5,6 +5,7 @@ export default {
     marca: 'Huamanga Club',
     edicion: 'Edición 0',
     edicionCorta: '00',
+    vol: 'Vol 0.',
     nombre: 'El cumple de Majo',
     cumpleanera: 'Majo',
     fechaCorta: 'Sáb 14.11',
@@ -29,8 +30,10 @@ export default {
   // Títulos con letras globo como IMAGEN (PNG/WebP con fondo transparente en public/images/titulos/).
   // Si hay imagen, se usa en vez de Spline (más liviano, sin sello de Spline, funciona en todos los celulares).
   titulos: {
-    club: '', // ej. '/images/titulos/huamanga-club.webp'
-    invitado: '', // ej. '/images/titulos/estas-invitado.webp'
+    club: '/images/titulos/huamanga-club.webp', // 3 líneas, para celular
+    invitado: '/images/titulos/estas-invitado.webp',
+    // Composición completa (cielo + título + globos + "Vol 0."): se usa tal cual en pantallas horizontales.
+    clubEscena: '/images/titulos/huamanga-club-vol0.webp',
   },
 
   // Música de fondo (archivo en public/audio/). Vacío = sin música, solo efectos.

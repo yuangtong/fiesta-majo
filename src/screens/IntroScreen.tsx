@@ -86,8 +86,10 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
     return (
       <div ref={titleRef} className="screen justify-center gap-6 text-center">
         <Floaties items={[
-          { img: 'nature-comet', x: '68%', y: '6%', size: 120 },
-          { img: 'shapes-star', x: '-4%', y: '72%', size: 110, rot: -14 },
+          { img: 'globos/flor', x: '-8%', y: '6%', size: 120, rot: -10 },
+          { img: 'nature-butterfly', x: '72%', y: '10%', size: 100, rot: 12 },
+          { img: 'nature-berries', x: '-4%', y: '76%', size: 100 },
+          { img: 'globos/perrito', x: '70%', y: '76%', size: 120, rot: -6 },
         ]} />
         {config.titulos.invitado || config.spline.invitadoActivo ? (
           <BalloonTitle
@@ -111,10 +113,9 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
   return (
     <div ref={rootRef} className="screen justify-center">
       <Floaties items={[
-          { img: 'nature-sun', x: '-6%', y: '8%', size: 120, rot: -8 },
-          { img: 'shapes-hearts', x: '72%', y: '14%', size: 100, rot: 12 },
-          { img: 'nature-rainbow', x: '-4%', y: '78%', size: 130 },
-          { img: 'shapes-yellow-flower', x: '74%', y: '80%', size: 100, rot: -10 },
+          { img: 'nature-comet', x: '68%', y: '6%', size: 120 },
+          { img: 'globos/flor', x: '-8%', y: '74%', size: 120, rot: -14 },
+          { img: 'shapes-hearts', x: '76%', y: '78%', size: 96, rot: 10 },
         ]} />
       <div className="env-stage relative flex flex-col items-center gap-8">
         <p className="font-dot text-lg font-black uppercase text-legible">

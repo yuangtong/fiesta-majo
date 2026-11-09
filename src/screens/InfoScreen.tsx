@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { Calendar, Copy, Gift, Mail, MapPin, Music, Share2 } from 'lucide-react';
+import { Calendar, Copy, Gift, Mail, MapPin, Music } from 'lucide-react';
 import { config } from '../config';
-import { copyLink, downloadICS, mapsUrl, shareWhatsApp } from '../lib/actions';
+import { copyLink, downloadICS, mapsUrl } from '../lib/actions';
 import { resendConfirmation } from '../lib/api';
 import { prefersReducedMotion } from '../lib/motion';
 import { Modal } from '../components/Modal';
@@ -45,7 +45,8 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
     <div data-passthrough className="h-full w-full overflow-y-auto overscroll-contain">
       <Floaties items={[
         { img: 'nature-rainbow', x: '70%', y: '2%', size: 120 },
-        { img: 'shapes-star', x: '-5%', y: '86%', size: 96, rot: 12 },
+        { img: 'lifestyle-bulb', x: '-5%', y: '86%', size: 90, rot: 12 },
+        { img: 'globos/flor', x: '80%', y: '84%', size: 90, rot: -10 },
       ]} />
       <div ref={ref} data-passthrough className="mx-auto flex w-full max-w-[460px] flex-col gap-4 px-5 pb-24 pt-10">
         <div className="flex flex-col items-start gap-1.5 font-dot font-black uppercase">
@@ -96,7 +97,6 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
             <button className="btn-ghost" onClick={() => setQr(true)}><Gift size={18} /> Colaborar</button>
           )}
           <button className="btn-ghost" onClick={downloadICS}><Calendar size={18} /> Calendario</button>
-          <button className="btn-ghost" onClick={shareWhatsApp}><Share2 size={18} /> WhatsApp</button>
           <button className="btn-ghost" onClick={copy}><Copy size={18} /> {copied ? '¡Copiado!' : 'Copiar link'}</button>
           {config.email.activo && guest.email && (
             <button className="btn-ghost" onClick={resend} disabled={emailState === 'sending'}>
