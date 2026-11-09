@@ -42,11 +42,12 @@ export function ClubScreen({ onNext }: { onNext: () => void }) {
           <span className="row mt-3 bg-white px-2 text-xl text-ink md:text-2xl">{e.fechaLarga}</span>
           <span className="row bg-white px-2 text-xl text-ink md:text-2xl">{e.hora}</span>
           <span className="row bg-white px-2 text-xl text-ink md:text-2xl">{e.direccion}</span>
+          <span className="row bg-white px-2 text-xl text-ink md:text-2xl">{e.distrito}</span>
 
           <span className="row mt-4 bg-white px-2 text-sm text-ink md:text-base">Sets de</span>
           {c.lineup.map((l) => (
-            <span key={l.nombre} className="row bg-ink px-2 text-xl text-white md:text-2xl">
-              <span className="text-balloon-light">{l.hora}</span> {l.nombre}
+            <span key={l.nombre} className="row bg-ink px-2 text-xl normal-case text-white md:text-2xl">
+              {l.hora && <span className="text-balloon-light">{l.hora} </span>}{l.nombre}
             </span>
           ))}
         </div>

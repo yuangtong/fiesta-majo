@@ -34,7 +34,7 @@ export function buildEmailHTML(nombre, numero) {
     <p style="margin:8px 0 0;font-size:14px;color:#FFFFFF;">${escapeHtml(e.nombre)}${num ? ` · Entrada ${num}` : ''}</p>
   </div>
   ${card('Cuándo', `<p style="margin:0;font-size:24px;font-weight:bold;color:${INK};">${escapeHtml(e.fechaLarga)}</p><p style="margin:4px 0 0;color:${INK};">${escapeHtml(e.hora)}</p>`)}
-  ${card('Dónde', `<p style="margin:0;font-weight:bold;color:${INK};">${escapeHtml(e.direccion)}</p><p style="margin:4px 0 12px;color:#5B6B8C;font-size:13px;">${escapeHtml(e.referencia)}</p>${btn(mapsUrl, 'Ver en Google Maps', INK)}`)}
+  ${card('Dónde', `<p style="margin:0;font-weight:bold;color:${INK};">${escapeHtml(e.direccion)}, ${escapeHtml(e.distrito)}</p><p style="margin:4px 0 12px;color:#5B6B8C;font-size:13px;">${escapeHtml(e.referencia)}</p>${btn(mapsUrl, 'Ver en Google Maps', INK)}`)}
   ${card('Dress code', `<p style="margin:0;font-size:18px;font-weight:bold;color:${BALLOON};">${escapeHtml(config.tematica.titulo)}</p><p style="margin:6px 0 0;color:${INK};">${escapeHtml(config.tematica.texto)}</p>`)}
   ${card('Reglas', reglas)}
   ${info.playlist.url ? card(escapeHtml(info.playlist.nombre), btn(info.playlist.url, 'Abrir playlist', '#1DB954')) : ''}

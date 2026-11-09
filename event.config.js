@@ -6,15 +6,16 @@ export default {
     edicion: 'Edición 0',
     edicionCorta: '00',
     vol: 'Vol 0.',
-    nombre: 'El cumple de Majo',
-    cumpleanera: 'Majo',
+    nombre: 'Majo x Adri', // dos cumpleañeras
+    cumpleaneras: 'Majo x Adri',
     fechaCorta: 'Sáb 14.11',
     fechaLarga: 'Sábado 14 de noviembre',
     hora: '22:00 – late',
     inicioUTC: '20261115T030000Z', // sáb 14/11 22:00 en Lima (UTC-5)
     finUTC: '20261115T110000Z', // dom 15/11 06:00 en Lima
     direccion: 'Huamanga 419',
-    referencia: 'Magdalena del Mar, Lima · límite con Pueblo Libre', // TODO confirmar
+    distrito: 'Magdalena del Mar',
+    referencia: 'Lima · límite con Pueblo Libre',
     mapsQuery: 'Huamanga 419, Magdalena del Mar, Lima, Peru', // texto para el calendario
     mapsLink: 'https://maps.app.goo.gl/nT9jMGzWufdzbKcXA', // link exacto de Google Maps
     urlPublica: 'https://TODO.vercel.app',
@@ -55,11 +56,11 @@ export default {
 
   club: {
     presenta: 'presenta',
+    // DJs (hora opcional: si se agrega, se muestra delante del nombre)
     lineup: [
-      // TODO: quién pone música y a qué hora
-      { hora: '22:00', nombre: 'TODO DJ 1' },
-      { hora: '00:00', nombre: 'TODO DJ 2' },
-      { hora: '02:00', nombre: '+ invitado sorpresa' },
+      { hora: '', nombre: '@yunngfeo' },
+      { hora: '', nombre: '@mathi' },
+      { hora: '', nombre: '@tifu' },
     ],
     hint: 'Arrastra los globos',
     cta: 'Toca para saber la temática',
@@ -96,6 +97,13 @@ export default {
       { label: 'Concierto', img: 'lifestyle-guitar' },
       { label: 'Turista', img: 'lifestyle-globe' },
     ],
+    // TikToks de referencia (se muestran como videos dentro de la explicación de la temática)
+    tiktoks: [
+      { autor: '@kassandrabt29', id: '7578320933958454548' },
+      { autor: '@aaashleyk', id: '7649091294907714847' },
+      { autor: '@sarahnew', id: '7625726481930472726' },
+      { autor: '@claucorreiac', id: '7552697414960942347' },
+    ],
     noVale: 'No vale: gorrito de fiesta, ropa de cumpleaños ni nada que diga “happy birthday”.',
     cta: 'Confirmar asistencia',
   },
@@ -112,7 +120,7 @@ export default {
   ticket: {
     titulo: 'Tu entrada',
     marca: 'Huamanga Club v0', // lo que dice el ticket arriba
-    evento: 'El cumple de Majo',
+    evento: 'Majo x Adri',
     stub: 'Admit one',
     dressCode: 'Dress code: la ocasión incorrecta',
   },

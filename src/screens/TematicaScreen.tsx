@@ -4,6 +4,7 @@ import { Draggable } from 'gsap/Draggable';
 import { config } from '../config';
 import { CrossedGift } from '../components/CrossedGift';
 import { Floaties } from '../components/Floaties';
+import { TikToks } from '../components/TikToks';
 import { plasticine, prefersReducedMotion } from '../lib/motion';
 import { squeak } from '../lib/sfx';
 
@@ -44,7 +45,7 @@ export function TematicaScreen({ onNext }: { onNext: () => void }) {
     <div ref={ref} className="screen gap-6 md:justify-center md:text-center">
       <Floaties items={[
         { img: 'nature-fish', x: '74%', y: '2%', size: 104, rot: 12 },
-        { img: 'nature-sun', x: '-8%', y: '84%', size: 120 },
+        { img: 'nature-sun', x: '-10%', y: '90%', size: 96 },
         { img: 'globos/flor', x: '78%', y: '86%', size: 100, rot: -12 },
       ]} />
       <div className="lead flex w-full max-w-[420px] items-end gap-3 md:max-w-[640px] md:justify-center">
@@ -70,6 +71,10 @@ export function TematicaScreen({ onNext }: { onNext: () => void }) {
           </li>
         ))}
       </ul>
+
+      <div className="lead w-full md:flex md:justify-center">
+        <TikToks items={t.tiktoks} titulo="Ideas para inspirarte" />
+      </div>
 
       <p className="lead w-full max-w-[420px] md:max-w-[560px] rounded-[22px] bg-ink px-4 py-3 text-sm font-semibold leading-relaxed text-white">
         {t.noVale}

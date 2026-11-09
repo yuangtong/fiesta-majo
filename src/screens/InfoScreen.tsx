@@ -63,7 +63,7 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
 
         <section className="panel">
           <h3 className="mb-2 flex items-center gap-1.5 text-sm font-extrabold text-ink/60"><MapPin size={16} /> Dónde</h3>
-          <p className="text-xl font-extrabold">{e.direccion}</p>
+          <p className="text-xl font-extrabold">{e.direccion}, {e.distrito}</p>
           <p className="mb-4 text-sm text-ink/70">{e.referencia}</p>
           <a className="btn-balloon w-full" href={mapsUrl()} target="_blank" rel="noreferrer">Abrir en Google Maps</a>
         </section>
