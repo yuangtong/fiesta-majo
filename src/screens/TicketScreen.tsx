@@ -48,10 +48,10 @@ export function TicketScreen({ guest, onNext }: { guest: Guest; onNext: () => vo
   }, []);
 
   const share = async () => {
-    const text = `Tengo mi entrada ${numero} para ${e.marca} · ${e.edicion}. ¿Tú?`;
+    const text = `Tengo mi entrada ${numero} para ${config.ticket.marca}. ¿Tú?`;
     const url = window.location.origin;
     try {
-      if (navigator.share) await navigator.share({ title: `${e.marca} · ${e.edicion}`, text, url });
+      if (navigator.share) await navigator.share({ title: config.ticket.marca, text, url });
       else { await navigator.clipboard.writeText(`${text} ${url}`); setShared(true); }
     } catch { /* el usuario canceló */ }
   };
@@ -64,12 +64,12 @@ export function TicketScreen({ guest, onNext }: { guest: Guest; onNext: () => vo
         <AdmitOneTicket
           width={width}
           name={fullName(guest)}
-          presenter={`${e.marca} presenta`}
-          event={`${e.edicion} · ${e.nombre}`}
+          presenter={config.ticket.marca}
+          event={config.ticket.evento}
           venue={e.direccion}
           dates={e.fechaCorta}
           stubText={numero || config.ticket.stub}
-          watermark={e.edicionCorta}
+          watermark="v0"
           texture={TEXTURE}
           layout={LAYOUT}
         />

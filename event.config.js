@@ -7,11 +7,11 @@ export default {
     edicionCorta: '00',
     nombre: 'El cumple de Majo',
     cumpleanera: 'Majo',
-    fechaCorta: 'TODO DD.MM',
-    fechaLarga: 'TODO Sábado DD de mes',
-    hora: '21:00 – late',
-    inicioUTC: '20270101T020000Z', // TODO fecha real (hora de Lima + 5 h)
-    finUTC: '20270101T110000Z',
+    fechaCorta: 'Sáb 14.11',
+    fechaLarga: 'Sábado 14 de noviembre',
+    hora: '22:00 – late',
+    inicioUTC: '20261115T030000Z', // sáb 14/11 22:00 en Lima (UTC-5)
+    finUTC: '20261115T110000Z', // dom 15/11 06:00 en Lima
     direccion: 'Huamanga 419',
     referencia: 'Magdalena del Mar, Lima · límite con Pueblo Libre', // TODO confirmar
     mapsQuery: 'Huamanga 419, Magdalena del Mar, Lima, Peru',
@@ -41,11 +41,13 @@ export default {
     presenta: 'presenta',
     lineup: [
       // TODO: quién pone música y a qué hora
-      { hora: '21:00', nombre: 'TODO DJ 1' },
-      { hora: '23:00', nombre: 'TODO DJ 2' },
-      { hora: '01:00', nombre: '+ invitado sorpresa' },
+      { hora: '22:00', nombre: 'TODO DJ 1' },
+      { hora: '00:00', nombre: 'TODO DJ 2' },
+      { hora: '02:00', nombre: '+ invitado sorpresa' },
     ],
     nota: 'Primera fiesta organizada por nosotros, con consola propia.',
+    hint: 'Arrastra los globos',
+    ctaLineup: 'Ver el line-up',
     cta: 'Toca para saber la temática',
   },
 
@@ -94,6 +96,8 @@ export default {
 
   ticket: {
     titulo: 'Tu entrada',
+    marca: 'Huamanga Club v0', // lo que dice el ticket arriba
+    evento: 'El cumple de Majo',
     stub: 'Admit one',
     dressCode: 'Dress code: la ocasión incorrecta',
   },

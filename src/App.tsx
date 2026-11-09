@@ -79,7 +79,7 @@ function Invitation() {
   return (
     <main className="relative h-full w-full overflow-hidden">
       <Sky />
-      <div ref={screenRef} className="relative h-full w-full">{render()}</div>
+      <div ref={screenRef} className="pointer-events-none relative h-full w-full">{render()}</div>
       {started && <AudioToggle enabled={audioOn} onToggle={toggle} />}
     </main>
   );

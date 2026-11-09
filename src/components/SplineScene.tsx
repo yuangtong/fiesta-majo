@@ -8,12 +8,14 @@ const hasWebGL = () => {
 // Escena 3D de Spline (letras globo). Carga el runtime solo cuando hace falta (es pesado),
 // pone el fondo transparente y oculta el texto de ayuda "Drag any balloon…".
 // Si no hay WebGL, falla o tarda demasiado, muestra `fallback`.
-export function SplineScene({ scene, fallback, className = '', onReady, timeoutMs = 12000 }: {
+export function SplineScene({ scene, fallback, className = '', onReady, timeoutMs = 12000, interactive = false }: {
   scene: string;
   fallback: ReactNode;
   className?: string;
   onReady?: (app: Application) => void;
   timeoutMs?: number;
+  /** true = se pueden arrastrar los objetos con el dedo (bloquea el scroll sobre la escena) */
+  interactive?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'failed'>(() => (hasWebGL() ? 'loading' : 'failed'));
@@ -53,7 +55,7 @@ export function SplineScene({ scene, fallback, className = '', onReady, timeoutM
           ref={canvasRef}
           aria-hidden
           className="absolute inset-0 h-full w-full transition-opacity duration-500"
-          style={{ opacity: state === 'ready' ? 1 : 0, touchAction: 'pan-y' }}
+          style={{ opacity: state === 'ready' ? 1 : 0, touchAction: interactive ? 'none' : 'pan-y' }}
         />
       )}
     </div>

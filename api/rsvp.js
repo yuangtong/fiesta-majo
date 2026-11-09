@@ -26,6 +26,8 @@ export default async function handler(req, res) {
     res.status(200).json({ ok: true, numero, emailSent: !error });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'No se pudo guardar' });
+    // Si faltan variables de entorno, decirlo (no expone secretos).
+    const missing = String(err.message).startsWith('Missing');
+    res.status(500).json({ error: missing ? err.message : 'No se pudo guardar' });
   }
 }

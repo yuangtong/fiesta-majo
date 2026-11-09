@@ -22,7 +22,9 @@ body {
 :focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 12px; }
 
 @layer components {
-  .screen { @apply relative flex h-full w-full flex-col items-center overflow-y-auto px-5 py-10; }
+  /* La pantalla deja pasar toques a las nubes del fondo; solo su contenido recibe toques. */
+  .screen { @apply pointer-events-none relative flex h-full w-full flex-col items-center overflow-y-auto px-5 py-10; }
+  .screen > * { pointer-events: auto; }
 
   /* Botón tipo globo: pastilla brillante que se aplasta al tocar */
   .btn-balloon {

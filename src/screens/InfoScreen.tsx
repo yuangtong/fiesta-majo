@@ -41,8 +41,8 @@ export function InfoScreen({ guest, total }: { guest: Guest; total: number | nul
   };
 
   return (
-    <div className="h-full w-full overflow-y-auto">
-      <div ref={ref} className="mx-auto flex w-full max-w-[460px] flex-col gap-4 px-5 pb-24 pt-10">
+    <div className="pointer-events-none h-full w-full overflow-y-auto">
+      <div ref={ref} className="pointer-events-auto mx-auto flex w-full max-w-[460px] flex-col gap-4 px-5 pb-24 pt-10">
         <div className="flex flex-col items-start gap-1.5 font-dot font-black uppercase">
           <span className="bg-white px-2 text-lg text-ink">{e.marca}</span>
           <span className="bg-ink px-2 text-[clamp(34px,10vw,46px)] leading-none text-white">{e.edicion}</span>
