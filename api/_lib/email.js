@@ -14,7 +14,7 @@ export function buildEmailHTML(nombre, numero) {
   const info = config.info;
   const n = escapeHtml(nombre);
   const num = formatNumero(numero);
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.mapsQuery)}`;
+  const mapsUrl = e.mapsLink || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.mapsQuery)}`;
   const reglas = info.reglas
     .map((r, i) => `<p style="margin:0 0 8px;color:${INK};font-size:14px;"><b>${i + 1}.</b> ${escapeHtml(r)}</p>`)
     .join('');

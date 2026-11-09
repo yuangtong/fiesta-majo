@@ -4,7 +4,7 @@ import { config } from '../config';
 const ev = config.evento;
 
 export const mapsUrl = () =>
-  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.mapsQuery)}`;
+  ev.mapsLink || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.mapsQuery)}`;
 
 export function downloadICS() {
   const ics = [

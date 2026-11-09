@@ -51,7 +51,6 @@ export function ClubScreen({ onNext }: { onNext: () => void }) {
           ))}
         </div>
 
-        <p className="text-legible relative z-10 max-w-[420px] text-center text-sm font-semibold">{c.nota}</p>
         <button className="btn-balloon relative z-10" onClick={onNext}>{c.cta}</button>
       </div>
     </div>

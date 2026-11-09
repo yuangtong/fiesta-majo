@@ -15,7 +15,8 @@ export default {
     finUTC: '20261115T110000Z', // dom 15/11 06:00 en Lima
     direccion: 'Huamanga 419',
     referencia: 'Magdalena del Mar, Lima · límite con Pueblo Libre', // TODO confirmar
-    mapsQuery: 'Huamanga 419, Magdalena del Mar, Lima, Peru',
+    mapsQuery: 'Huamanga 419, Magdalena del Mar, Lima, Peru', // texto para el calendario
+    mapsLink: 'https://maps.app.goo.gl/nT9jMGzWufdzbKcXA', // link exacto de Google Maps
     urlPublica: 'https://TODO.vercel.app',
   },
 
@@ -60,7 +61,6 @@ export default {
       { hora: '00:00', nombre: 'TODO DJ 2' },
       { hora: '02:00', nombre: '+ invitado sorpresa' },
     ],
-    nota: 'Primera fiesta organizada por nosotros, con consola propia.',
     hint: 'Arrastra los globos',
     cta: 'Toca para saber la temática',
   },
