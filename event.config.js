@@ -53,8 +53,8 @@ export default {
     // DJs (hora opcional: si se agrega, se muestra delante del nombre)
     lineup: [
       { hora: '', nombre: '@yunngfeo' },
-      { hora: '', nombre: '@mathi' },
-      { hora: '', nombre: '@tifu' },
+      { hora: '', nombre: '@mat_moscol' },
+      { hora: '', nombre: '@tifuu1' },
     ],
     hint: 'Arrastra los globos',
     cta: 'Toca para saber la temática',
