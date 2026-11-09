@@ -18,16 +18,9 @@ export default {
     referencia: 'Lima · límite con Pueblo Libre',
     mapsQuery: 'Huamanga 419, Magdalena del Mar, Lima, Peru', // texto para el calendario
     mapsLink: 'https://maps.app.goo.gl/nT9jMGzWufdzbKcXA', // link exacto de Google Maps
-    urlPublica: 'https://TODO.vercel.app',
+    urlPublica: 'https://huamanga-v0.vercel.app',
   },
 
-  // Escenas 3D de Spline (letras globo cromadas)
-  spline: {
-    club: 'https://prod.spline.design/nCbIKyw6U5Vr-tyc/scene.splinecode',
-    invitado: 'https://prod.spline.design/E7ixEusTl982zmgw/scene.splinecode',
-    // TODO: activar cuando la escena se re-exporte con renderer "Both" o "WebGL 2" (hoy es solo WebGPU)
-    invitadoActivo: false,
-  },
 
   // Títulos con letras globo como IMAGEN (PNG/WebP con fondo transparente en public/images/titulos/).
   // Si hay imagen, se usa en vez de Spline (más liviano, sin sello de Spline, funciona en todos los celulares).

@@ -1,14 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { Draggable } from 'gsap/Draggable';
+import { makeThrowable } from '../lib/drag';
 import { config } from '../config';
 import { CrossedGift } from '../components/CrossedGift';
 import { Floaties } from '../components/Floaties';
 import { TikToks } from '../components/TikToks';
-import { plasticine, prefersReducedMotion } from '../lib/motion';
-import { squeak } from '../lib/sfx';
-
-gsap.registerPlugin(Draggable);
+import { prefersReducedMotion, toyImg } from '../lib/motion';
 
 // Pantalla 4: qué significa "La ocasión incorrecta", con ejemplos como stickers que se pueden apretar.
 export function TematicaScreen({ onNext }: { onNext: () => void }) {
@@ -18,11 +15,11 @@ export function TematicaScreen({ onNext }: { onNext: () => void }) {
   useEffect(() => {
     if (!ref.current) return;
     // Las cartas se pueden arrastrar a cualquier parte; un toque sin arrastrar las aplasta.
-    const drags = Draggable.create(ref.current.querySelectorAll('.sticker'), {
+    let z = 10;
+    const drags = makeThrowable(ref.current.querySelectorAll('.sticker'), {
       bounds: window,
-      zIndexBoost: true,
-      onClick() { squish(this.target as HTMLElement); },
-      onPress() { squeak(); },
+      onGrab: (el) => { el.style.zIndex = String(++z); },
+      onTap: (el) => squish(el),
     });
     if (prefersReducedMotion()) return () => drags.forEach((d) => d.kill());
     const ctx = gsap.context(() => {
@@ -65,7 +62,7 @@ export function TematicaScreen({ onNext }: { onNext: () => void }) {
               aria-label={e.label}
               className="sticker relative flex cursor-grab touch-none w-full flex-col items-center gap-1 rounded-[22px] bg-white px-2 pb-2.5 pt-3 shadow-[0_10px_20px_rgba(10,31,68,0.14)]"
             >
-              <img src={plasticine(e.img)} alt="" className="h-16 w-16 object-contain" />
+              <img {...toyImg(e.img, '64px')} alt="" className="h-16 w-16 object-contain" />
               <span className="text-sm font-extrabold text-ink">{e.label}</span>
             </button>
           </li>

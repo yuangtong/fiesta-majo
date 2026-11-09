@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti';
 import { config } from '../config';
 import { CrossedGift } from '../components/CrossedGift';
 import { Floaties } from '../components/Floaties';
-import { plasticine, prefersReducedMotion } from '../lib/motion';
+import { prefersReducedMotion, toyImg } from '../lib/motion';
 import { pop, tada, tick } from '../lib/sfx';
 
 // Pantalla 3: ruleta de temáticas. Parece aleatoria, pero SIEMPRE cae en "La ocasión incorrecta".
@@ -138,7 +138,7 @@ export function RuletaScreen({ onNext }: { onNext: () => void }) {
               style={{ width: CARD_W, height: CARD_H }}
             >
               {/* Todas las cartas se ven igual: la ganadora no se delata hasta que sale */}
-              <img src={plasticine(c.img)} alt="" className="h-14 w-14 object-contain" />
+              <img {...toyImg(c.img, '56px')} alt="" className="h-14 w-14 object-contain" />
               <span className="text-center text-[10px] font-extrabold leading-tight text-ink">{'winner' in c ? r.ganadora.cartaLabel : c.label}</span>
             </div>
           ))}

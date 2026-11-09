@@ -1,3 +1,10 @@
+/* Fuentes servidas desde la propia web (sin bloquear el primer pintado con Google Fonts) */
+@import '@fontsource/archivo/latin-400.css';
+@import '@fontsource/archivo/latin-700.css';
+@import '@fontsource/archivo/latin-800.css';
+@import '@fontsource/bagel-fat-one/latin-400.css';
+@import '@fontsource/doto/latin-900.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

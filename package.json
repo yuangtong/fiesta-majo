@@ -10,8 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@splinetool/react-spline": "^4.2.0",
-    "@splinetool/runtime": "^2.0.157",
+    "@fontsource/archivo": "^5.3.0",
+    "@fontsource/bagel-fat-one": "^5.3.0",
+    "@fontsource/doto": "^5.3.0",
     "canvas-confetti": "^1.9.4",
     "gsap": "^3.15.0",
     "lucide-react": "^0.562.0",

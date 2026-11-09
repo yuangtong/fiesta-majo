@@ -1,10 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { Draggable } from 'gsap/Draggable';
 import { prefersReducedMotion } from '../lib/motion';
-import { squeak } from '../lib/sfx';
-
-gsap.registerPlugin(Draggable);
+import { makeThrowable } from '../lib/drag';
 
 // Nubes infladas sobre el degradado del cielo (body).
 // Viajan despacio y al azar por toda la pantalla; se pueden arrastrar y, al soltarlas, siguen su paseo.
@@ -31,7 +28,6 @@ export function Sky() {
     if (!root) return;
     const reduced = prefersReducedMotion();
     const wanders = new Map<HTMLElement, gsap.core.Tween>();
-    const cleanup: (() => void)[] = [];
 
     // Paseo: va a un punto al azar dentro de la pantalla (puede asomarse un poco por los bordes) y repite.
     const wander = (el: HTMLElement) => {
@@ -60,52 +56,26 @@ export function Sky() {
         }
       });
 
-      const drags = Draggable.create(clouds, {
-        zIndexBoost: false,
-        onPress() {
-          wanders.get(this.target)?.kill();
-          squeak();
-          if (!reduced) gsap.to(this.target.firstElementChild, { scale: 1.08, duration: 0.25, ease: 'back.out(3)' });
-        },
-        onRelease() {
-          if (!reduced) gsap.to(this.target.firstElementChild, { scale: 1, duration: 0.6, ease: 'elastic.out(1.1, 0.4)' });
-          gsap.delayedCall(1.5, () => wander(this.target));
-        },
-      });
-      // La pantalla está encima de las nubes (para poder hacer scroll). Si el toque cae en un espacio vacío
-      // de la pantalla y hay una nube debajo, se empieza a arrastrar esa nube.
-      const isEmptySpot = (t: EventTarget | null) =>
-        t instanceof HTMLElement && (t.hasAttribute('data-passthrough') || t.classList.contains('screen'));
-      const onDown = (ev: MouseEvent | TouchEvent) => {
-        if (!isEmptySpot(ev.target)) return;
-        const p = 'touches' in ev ? ev.touches[0] : ev;
-        const cloud = document.elementsFromPoint(p.clientX, p.clientY).find((el) => el.classList.contains('cloud'));
-        const drag = cloud && drags.find((d) => d.target === cloud);
-        if (!drag) return;
-        ev.preventDefault();
-        wanders.get(cloud as HTMLElement)?.kill();
-        squeak();
-        drag.startDrag(ev);
-      };
-      window.addEventListener('mousedown', onDown, true);
-      window.addEventListener('touchstart', onDown, { capture: true, passive: false });
-      cleanup.push(() => {
-        window.removeEventListener('mousedown', onDown, true);
-        window.removeEventListener('touchstart', onDown, true);
+      // Arrastrar con física; al quedar quieta, la nube retoma su paseo
+      makeThrowable(clouds, {
+        onGrab: (el) => wanders.get(el)?.kill(),
+        onRest: (el) => { gsap.delayedCall(1.5, () => wander(el)); },
       });
     }, root);
 
-    return () => { cleanup.forEach((f) => f()); wanders.forEach((t) => t.kill()); ctx.revert(); };
+    return () => { wanders.forEach((t) => t.kill()); ctx.revert(); };
   }, []);
 
   return (
     <div ref={ref} className="absolute inset-0 overflow-hidden">
       {CLOUDS.map((c, i) => (
-        <div key={i} aria-hidden className="cloud absolute left-0 top-0 cursor-grab touch-none select-none active:cursor-grabbing">
+        <div key={i} aria-hidden className="cloud absolute left-0 top-0 cursor-grab touch-none select-none will-change-transform active:cursor-grabbing">
           {/* el span recibe escala/balanceo; la imagen solo se voltea */}
           <span className="block">
             <img
-              src="/images/fondo/nube.webp"
+              src="/images/fondo/nube-sm.webp"
+              srcSet="/images/fondo/nube-sm.webp 480w, /images/fondo/nube.webp 900w"
+              sizes="(min-width: 768px) 30vw, 40vw"
               alt=""
               draggable={false}
               className="w-full drop-shadow-[0_12px_20px_rgba(10,31,68,0.12)]"

@@ -6,7 +6,7 @@ import { Envelope } from '../components/Envelope';
 import { BubbleWords } from '../components/BubbleWords';
 import { BalloonTitle } from '../components/BalloonTitle';
 import { Floaties } from '../components/Floaties';
-import { plasticine, prefersReducedMotion } from '../lib/motion';
+import { prefersReducedMotion, toyImg } from '../lib/motion';
 import { pop, puff, squeak } from '../lib/sfx';
 
 const BURST = ['shapes-star', 'shapes-hearts', 'nature-comet', 'nature-star', 'shapes-zigzag', 'nature-clouds', 'nature-rainbow', 'shapes-wave'];
@@ -100,11 +100,10 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
           { img: 'nature-berries', x: '-4%', y: '76%', size: 100 },
           { img: 'globos/perrito', x: '70%', y: '76%', size: 120, rot: -6 },
         ]} />
-        {config.titulos.invitado || config.spline.invitadoActivo ? (
+        {config.titulos.invitado ? (
           <BalloonTitle
             text={i.titulo}
             img={config.titulos.invitado}
-            spline={config.spline.invitadoActivo ? config.spline.invitado : undefined}
             className="h-[42svh] max-h-[460px] w-full max-w-[560px]"
             textClass="text-[clamp(56px,17vw,120px)]"
           />
@@ -139,7 +138,7 @@ export function IntroScreen({ onStart, onNext }: { onStart: () => void; onNext: 
             {BURST.map((img) => (
               <img
                 key={img}
-                src={plasticine(img)}
+                {...toyImg(img, '80px')}
                 alt=""
                 className="burst absolute w-20 opacity-0"
               />

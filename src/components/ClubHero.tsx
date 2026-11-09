@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { Draggable } from 'gsap/Draggable';
 import { ChevronDown } from 'lucide-react';
 import { config } from '../config';
-import { plasticine, prefersReducedMotion } from '../lib/motion';
-import { pop, puff, squeak } from '../lib/sfx';
+import { prefersReducedMotion, toyImg } from '../lib/motion';
+import { pop, puff } from '../lib/sfx';
 
-gsap.registerPlugin(Draggable);
+import { makeThrowable } from '../lib/drag';
 
 // Escena "Huamanga Club · Vol 0." armada capa por capa (siguiendo la composición de referencia),
 // con entrada de cine: franjas negras → la cámara empieza pegada al título, desenfocada, y hace zoom out
@@ -85,10 +84,10 @@ export function ClubHero({ onScrollHint }: { onScrollHint: () => void }) {
       const camera = root.querySelector('.camera')!;
       const toys = gsap.utils.toArray<HTMLElement>('.htoy');
 
-      Draggable.create([...toys, ...gsap.utils.toArray<HTMLElement>('.hdrag')], {
-        zIndexBoost: true,
-        onPress() { squeak(); gsap.to(this.target, { scale: 1.08, duration: 0.2 }); },
-        onRelease() { gsap.to(this.target, { scale: 1, duration: 0.7, ease: 'elastic.out(1.2, 0.35)' }); },
+      // Todo se puede lanzar con física (inercia + inclinación); el que agarras pasa adelante
+      let z = 100;
+      makeThrowable([...toys, ...gsap.utils.toArray<HTMLElement>('.hdrag')], {
+        onGrab: (el) => { el.style.zIndex = String(++z); },
       });
 
       if (reduced) { gsap.set('.bar', { scaleY: 0 }); gsap.set('.cue', { opacity: 1 }); return; }
@@ -156,7 +155,7 @@ export function ClubHero({ onScrollHint }: { onScrollHint: () => void }) {
             <div key={i} data-depth={l.depth} aria-hidden className="htoy absolute cursor-grab touch-none select-none"
               style={{ left: `${l.x}%`, top: `${l.y}%`, width: `${l.w}%`, zIndex: Math.round(l.depth * 10), filter: l.tint }}>
               <img
-                src={l.img.includes('/') ? (l.img.startsWith('fondo/') ? `/images/${l.img}.webp` : plasticine(l.img)) : plasticine(l.img)}
+                {...toyImg(l.img, `${l.w}vw`)}
                 alt="" draggable={false}
                 className="w-full drop-shadow-[0_16px_22px_rgba(10,31,68,0.2)]"
                 style={{ transform: `rotate(${l.rot ?? 0}deg) scaleX(${l.flip ? -1 : 1})` }}

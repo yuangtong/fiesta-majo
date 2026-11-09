@@ -1,5 +1,5 @@
 import { forwardRef, type ReactNode } from 'react';
-import { plasticine } from '../lib/motion';
+import { toyImg } from '../lib/motion';
 
 // Sobre "inflado" (mecánica basada en Ephemera, MIT): solapa con clip-path que rota en X y carta que sube.
 // La animación la maneja IntroScreen con GSAP usando las clases .env-flap, .env-letter, .env-seal.
@@ -44,7 +44,7 @@ export const Envelope = forwardRef<HTMLButtonElement, { to: string; onOpen: () =
         />
         {/* Sello de plastilina */}
         <img
-          src={plasticine('shapes-star')}
+          {...toyImg('shapes-star', '90px')}
           alt=""
           className="env-seal absolute left-1/2 top-[44%] w-[24%] -translate-x-1/2 -translate-y-1/2 drop-shadow-lg"
         />

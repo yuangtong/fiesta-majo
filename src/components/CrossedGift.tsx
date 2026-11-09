@@ -1,4 +1,4 @@
-import { plasticine } from '../lib/motion';
+import { toyImg } from '../lib/motion';
 
 // El regalo de cumpleaños tachado con una "X" inflada.
 // `crossed={false}` muestra solo el regalo; las barras tienen la clase .xbar para animar el tachado (scaleX).
@@ -18,7 +18,7 @@ export function CrossedGift({ size = 120, crossed = true }: { size?: number; cro
   );
   return (
     <div className="relative" style={{ width: size, height: size }}>
-      <img src={plasticine('lifestyle-gift')} alt="" className="h-full w-full object-contain" />
+      <img {...toyImg('lifestyle-gift', `${size}px`)} alt="" className="h-full w-full object-contain" />
       {crossed && bar(45)}
       {crossed && bar(-45)}
     </div>

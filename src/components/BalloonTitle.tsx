@@ -1,19 +1,16 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Draggable } from 'gsap/Draggable';
-import type { Application } from '@splinetool/runtime';
-import { SplineScene } from './SplineScene';
 import { BubbleWords } from './BubbleWords';
 import { prefersReducedMotion } from '../lib/motion';
 import { squeak } from '../lib/sfx';
 
 gsap.registerPlugin(Draggable);
 
-// Título en letras globo. Prioridad: imagen (IA) → escena Spline → texto inflado con CSS.
-export function BalloonTitle({ text, img, spline, className = '', textClass = '' }: {
+// Título en letras globo. Prioridad: imagen (IA) → texto inflado con CSS.
+export function BalloonTitle({ text, img, className = '', textClass = '' }: {
   text: string;
   img?: string;
-  spline?: string;
   className?: string;
   textClass?: string;
 }) {
@@ -39,18 +36,6 @@ export function BalloonTitle({ text, img, spline, className = '', textClass = ''
     return () => ctx.revert();
   }, [img]);
 
-  const onSplineReady = (app: Application) => {
-    squeak(0.3);
-    if (prefersReducedMotion()) return;
-    app.getAllObjects().filter((o) => /^(club|inv)-/.test(o.name)).forEach((o, i) => {
-      const s = { ...o.scale };
-      const v = { k: 0 };
-      gsap.to(v, {
-        k: 1, duration: 0.9, delay: 0.1 + i * 0.05, ease: 'elastic.out(1, 0.45)',
-        onUpdate: () => { o.scale.x = s.x * v.k; o.scale.y = s.y * v.k; o.scale.z = s.z * v.k; },
-      });
-    });
-  };
 
   const fallback = <BubbleWords text={text} className={`text-inflated text-center leading-[0.95] ${textClass}`} />;
 
@@ -61,6 +46,5 @@ export function BalloonTitle({ text, img, spline, className = '', textClass = ''
       </div>
     );
   }
-  if (spline) return <SplineScene scene={spline} onReady={onSplineReady} interactive className={className} fallback={fallback} />;
   return <div className={`grid place-items-center ${className}`}>{fallback}</div>;
 }

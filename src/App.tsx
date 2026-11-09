@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Route, Routes } from 'react-router';
 import { gsap } from 'gsap';
 import type { Guest, Screen } from './types';
@@ -8,13 +8,24 @@ import { prefersReducedMotion } from './lib/motion';
 import { Sky } from './components/Sky';
 import { AudioToggle } from './components/AudioToggle';
 import { IntroScreen } from './screens/IntroScreen';
-import { ClubScreen } from './screens/ClubScreen';
-import { RuletaScreen } from './screens/RuletaScreen';
-import { TematicaScreen } from './screens/TematicaScreen';
-import { FormScreen } from './screens/FormScreen';
-import { TicketScreen } from './screens/TicketScreen';
-import { InfoScreen } from './screens/InfoScreen';
-import AdminScreen from './pages/AdminScreen';
+import { installPassthrough } from './lib/drag';
+
+// Solo el inicio va en el JS inicial; el resto se descarga en segundo plano (ver prefetch) o al llegar.
+const loaders = {
+  club: () => import('./screens/ClubScreen'),
+  ruleta: () => import('./screens/RuletaScreen'),
+  tematica: () => import('./screens/TematicaScreen'),
+  form: () => import('./screens/FormScreen'),
+  ticket: () => import('./screens/TicketScreen'),
+  info: () => import('./screens/InfoScreen'),
+};
+const ClubScreen = lazy(() => loaders.club().then((m) => ({ default: m.ClubScreen })));
+const RuletaScreen = lazy(() => loaders.ruleta().then((m) => ({ default: m.RuletaScreen })));
+const TematicaScreen = lazy(() => loaders.tematica().then((m) => ({ default: m.TematicaScreen })));
+const FormScreen = lazy(() => loaders.form().then((m) => ({ default: m.FormScreen })));
+const TicketScreen = lazy(() => loaders.ticket().then((m) => ({ default: m.TicketScreen })));
+const InfoScreen = lazy(() => loaders.info().then((m) => ({ default: m.InfoScreen })));
+const AdminScreen = lazy(() => import('./pages/AdminScreen'));
 
 // Flujo: sobre → "Estás invitado" → Huamanga Club presenta → ruleta → temática → datos → entrada → info.
 const INITIAL: Guest = { nombre: '', apellido: '', email: '', canciones: [''], numero: null };
@@ -22,7 +33,7 @@ const INITIAL: Guest = { nombre: '', apellido: '', email: '', canciones: [''], n
 export default function App() {
   return (
     <Routes>
-      <Route path="/admin" element={<AdminScreen />} />
+      <Route path="/admin" element={<Suspense fallback={null}><AdminScreen /></Suspense>} />
       <Route path="*" element={<Invitation />} />
     </Routes>
   );
@@ -37,6 +48,15 @@ function Invitation() {
   const [yaExistia, setYaExistia] = useState<{ agregadas: number } | null>(null);
   const screenRef = useRef<HTMLDivElement>(null);
   const entering = useRef(false);
+
+  // Agarrar nubes/juguetes tocando un espacio vacío (están detrás del contenido)
+  useEffect(() => installPassthrough(), []);
+
+  // Descargar las demás pantallas cuando el navegador esté libre, para que no haya espera al avanzar
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1500));
+    idle(() => Object.values(loaders).forEach((load) => { void load(); }));
+  }, []);
 
   const update = useCallback((data: Partial<Guest>) => setGuest((g) => ({ ...g, ...data })), []);
 
@@ -80,7 +100,7 @@ function Invitation() {
   return (
     <main className="relative h-full w-full overflow-hidden">
       <Sky />
-      <div ref={screenRef} data-passthrough className="relative h-full w-full">{render()}</div>
+      <div ref={screenRef} data-passthrough className="relative isolate h-full w-full"><Suspense fallback={null}>{render()}</Suspense></div>
       {started && <AudioToggle enabled={audioOn} onToggle={toggle} />}
     </main>
   );
